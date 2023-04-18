@@ -1,5 +1,7 @@
 package co.com.perficient.project3.entity.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
 public class Stadium {
 
+    @Id
     private Long id;
     private String name;
     private String country;
