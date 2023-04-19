@@ -3,18 +3,16 @@ package co.com.perficient.project3.entity.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-public class Player extends Person {
+public class President extends Person {
 
-    private String number;
-    private String position;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_TEAM_ID"))
     private Team team;
 }
