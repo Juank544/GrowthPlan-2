@@ -1,4 +1,4 @@
-package co.com.perficient.project3.entity.model;
+package co.com.perficient.project3.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
