@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class StadiumServiceImpl implements StadiumService {
@@ -30,7 +31,7 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     @Override
-    public Optional<Stadium> findById(String id) {
+    public Optional<Stadium> findById(UUID id) {
         return stadiumRepository.findById(id);
     }
 
@@ -44,12 +45,12 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(UUID id) {
         stadiumRepository.deleteById(id);
     }
 
     @Override
-    public Stadium partialUpdate(Stadium stadium, Map<String, Object> fields) {
+    public Stadium patch(Stadium stadium, Map<String, Object> fields) {
         fields.forEach((s, value) -> {
             Field field = ReflectionUtils.findField(Stadium.class, s);
             if (Objects.nonNull(field)) {

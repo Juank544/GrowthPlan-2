@@ -4,6 +4,8 @@ import co.com.perficient.project3.model.entity.Stadium;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface StadiumRepository extends JpaRepository<Stadium, String> {
+public interface StadiumRepository extends JpaRepository<Stadium, UUID> {
 }
