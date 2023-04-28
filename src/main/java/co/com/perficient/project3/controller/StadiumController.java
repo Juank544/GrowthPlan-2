@@ -47,7 +47,8 @@ public class StadiumController {
     @GetMapping("{id}")
     public ResponseEntity<StadiumDTO> findStadiumById(@PathVariable UUID id) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
-        return optionalStadium.map(stadium -> new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        return optionalStadium.map(stadium -> new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @PutMapping("{id}")

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
@@ -18,7 +19,8 @@ import java.util.UUID;
 public class Stadium {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "myGenerator")
+    @GenericGenerator(name = "myGenerator", strategy = "co.com.perficient.project3.config.UseIdOrGenerate")
     private UUID id;
     private String name;
     private String country;
