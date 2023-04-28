@@ -1,4 +1,4 @@
-package co.com.perficient.project3.entity.model;
+package co.com.perficient.project3.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class President extends Person {
+public class Coach extends Person {
 
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_TEAM_ID"))
