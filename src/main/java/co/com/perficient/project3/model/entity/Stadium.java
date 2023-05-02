@@ -20,7 +20,7 @@ public class Stadium {
 
     @Id
     @GeneratedValue(generator = "myGenerator")
-    @GenericGenerator(name = "myGenerator", strategy = "co.com.perficient.project3.config.UseIdOrGenerate")
+    @GenericGenerator(name = "myGenerator", strategy = "co.com.perficient.project3.utils.UseIdOrGenerate")
     private UUID id;
     private String name;
     private String country;

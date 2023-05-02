@@ -4,7 +4,6 @@ import co.com.perficient.project3.model.dto.StadiumDTO;
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.repository.StadiumRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,11 +48,6 @@ class StadiumControllerIntegrationTest {
         Stadium stadiumPP = Stadium.builder().id(uuidB).name("Stadium B").country("Country B").city("City B")
                 .capacity("2").build();
         stadiumRepository.saveAll(Arrays.asList(stadiumSB, stadiumPP));
-    }
-
-    @AfterEach
-    void cleanData() {
-        stadiumRepository.deleteAllById(Arrays.asList(uuidA, uuidB));
     }
 
     @Test
@@ -123,10 +119,10 @@ class StadiumControllerIntegrationTest {
         final String NAME = "Stadium E";
         final String CAPACITY = "5";
 
-        StadiumDTO stadiumDTO = new StadiumDTO();
-        stadiumDTO.setName(NAME);
-        stadiumDTO.setCapacity(CAPACITY);
-        String body = new ObjectMapper().writeValueAsString(stadiumDTO);
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("name", NAME);
+        fields.put("capacity", CAPACITY);
+        String body = new ObjectMapper().writeValueAsString(fields);
 
         MvcResult mvcResult = mockMvc.perform(patch("/api/stadium/{id}", uuidB).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())

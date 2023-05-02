@@ -1,4 +1,4 @@
-package co.com.perficient.project3.config;
+package co.com.perficient.project3.utils;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
