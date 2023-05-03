@@ -48,7 +48,7 @@ public class StadiumController {
     public ResponseEntity<StadiumDTO> findStadiumById(@PathVariable UUID id) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
         return optionalStadium.map(stadium -> new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("{id}")
@@ -58,7 +58,7 @@ public class StadiumController {
             Stadium stadium = stadiumService.update(optionalStadium.get(), stadiumMapper.toEntity(stadiumDTO));
             return new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("{id}")
@@ -74,6 +74,6 @@ public class StadiumController {
             Stadium stadium = stadiumService.patch(optionalStadium.get(), fields);
             return new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
