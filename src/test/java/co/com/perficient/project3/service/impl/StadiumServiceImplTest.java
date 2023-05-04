@@ -2,6 +2,7 @@ package co.com.perficient.project3.service.impl;
 
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.repository.StadiumRepository;
+import com.querydsl.core.types.Predicate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,5 +99,15 @@ class StadiumServiceImplTest {
         Stadium stadiumPartialUpdated = stadiumService.patch(stadium, fields);
         Assertions.assertThat(stadiumPartialUpdated).isNotNull();
         Assertions.assertThat(stadiumPartialUpdated.getCountry()).isEqualTo(COUNTRY);
+    }
+
+    @Test
+    void findByName() {
+        when(stadiumRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(Stadium.builder().name(NAME)
+                .build()));
+
+        Optional<Stadium> optionalStadium = stadiumService.findByName(NAME);
+        Assertions.assertThat(optionalStadium).isNotNull();
+        Assertions.assertThat(optionalStadium.get().getName()).isEqualTo(NAME);
     }
 }
