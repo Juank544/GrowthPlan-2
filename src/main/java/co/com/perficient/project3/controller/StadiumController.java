@@ -28,7 +28,6 @@ public class StadiumController {
 
     @Autowired
     private StadiumService stadiumService;
-
     @Autowired
     private StadiumMapper stadiumMapper;
 
