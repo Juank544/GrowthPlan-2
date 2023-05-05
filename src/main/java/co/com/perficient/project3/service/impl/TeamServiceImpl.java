@@ -36,8 +36,6 @@ public class TeamServiceImpl implements TeamService {
         oldTeam.setName(newTeam.getName());
         oldTeam.setCountry(newTeam.getCountry());
         oldTeam.setStadium(newTeam.getStadium());
-        oldTeam.setPresident(newTeam.getPresident());
-        oldTeam.setCoach(newTeam.getCoach());
         return teamRepository.saveAndFlush(oldTeam);
     }
 
