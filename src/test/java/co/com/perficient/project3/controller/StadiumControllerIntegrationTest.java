@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,7 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class StadiumControllerIntegrationTest {
 
     @Autowired
@@ -43,11 +49,11 @@ class StadiumControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-        Stadium stadiumSB = Stadium.builder().id(uuidA).name("Stadium A").country("Country A").city("City A")
+        Stadium stadiumA = Stadium.builder().id(uuidA).name("Stadium A").country("Country A").city("City A")
                 .capacity("1").build();
-        Stadium stadiumPP = Stadium.builder().id(uuidB).name("Stadium B").country("Country B").city("City B")
+        Stadium stadiumB = Stadium.builder().id(uuidB).name("Stadium B").country("Country B").city("City B")
                 .capacity("2").build();
-        stadiumRepository.saveAll(Arrays.asList(stadiumSB, stadiumPP));
+        stadiumRepository.saveAll(Arrays.asList(stadiumA, stadiumB));
     }
 
     @Test
@@ -75,8 +81,8 @@ class StadiumControllerIntegrationTest {
     @Test
     void findAllStadiums() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/api/stadium/")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.size()").value(2))
-                .andReturn();
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
