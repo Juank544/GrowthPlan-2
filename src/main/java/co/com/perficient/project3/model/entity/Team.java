@@ -2,22 +2,31 @@ package co.com.perficient.project3.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 public class Team {
 
     @Id
-    private Long id;
+    @GeneratedValue(generator = "myGenerator")
+    @GenericGenerator(name = "myGenerator", strategy = "co.com.perficient.project3.utils.UseIdOrGenerate")
+    private UUID id;
     private String name;
     private String country;
     @OneToOne

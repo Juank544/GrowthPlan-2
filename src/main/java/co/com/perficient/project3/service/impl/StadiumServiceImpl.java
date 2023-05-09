@@ -1,8 +1,10 @@
 package co.com.perficient.project3.service.impl;
 
+import co.com.perficient.project3.model.entity.QStadium;
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.repository.StadiumRepository;
 import co.com.perficient.project3.service.StadiumService;
+import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -59,5 +61,12 @@ public class StadiumServiceImpl implements StadiumService {
             }
         });
         return stadiumRepository.saveAndFlush(stadium);
+    }
+
+    @Override
+    public Optional<Stadium> findByName(String name) {
+        QStadium stadium = QStadium.stadium;
+        Predicate predicateName = stadium.name.equalsIgnoreCase(name);
+        return stadiumRepository.findOne(predicateName);
     }
 }

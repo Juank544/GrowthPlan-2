@@ -23,12 +23,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/stadium/")
+@RequestMapping("/api/stadium")
 public class StadiumController {
 
     @Autowired
     private StadiumService stadiumService;
-
     @Autowired
     private StadiumMapper stadiumMapper;
 
@@ -44,14 +43,14 @@ public class StadiumController {
         return new ResponseEntity<>(stadiums, HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<StadiumDTO> findStadiumById(@PathVariable UUID id) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
         return optionalStadium.map(stadium -> new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<StadiumDTO> updateStadium(@PathVariable UUID id, @RequestBody StadiumDTO stadiumDTO) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
         if (optionalStadium.isPresent()) {
@@ -61,13 +60,13 @@ public class StadiumController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<StadiumDTO> deleteStadium(@PathVariable UUID id) {
         stadiumService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping({"{id}"})
+    @PatchMapping({"/{id}"})
     public ResponseEntity<StadiumDTO> patchStadium(@PathVariable UUID id, @RequestBody Map<String, Object> fields) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
         if (optionalStadium.isPresent()) {

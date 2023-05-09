@@ -2,6 +2,7 @@ package co.com.perficient.project3.service.impl;
 
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.repository.StadiumRepository;
+import com.querydsl.core.types.Predicate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,9 +31,6 @@ class StadiumServiceImplTest {
 
     final UUID ID_STADIUM = UUID.randomUUID();
     final String NAME = "stadiumName";
-    final String COUNTRY = "Colombia";
-    final String CITY = "Bogota";
-    final String CAPACITY = "2000";
 
     @BeforeEach
     void setUp() {
@@ -63,12 +61,15 @@ class StadiumServiceImplTest {
         when(stadiumRepository.findById(any(UUID.class))).thenReturn(Optional.of(Stadium.builder().id(ID_STADIUM).build()));
 
         Optional<Stadium> optionalStadium = stadiumService.findById(ID_STADIUM);
-        Assertions.assertThat(optionalStadium).isNotNull();
+        Assertions.assertThat(optionalStadium).isNotNull().isPresent();
     }
 
     @Test
     void update() {
         Stadium oldStadium = Stadium.builder().build();
+        final String COUNTRY = "colombia";
+        final String CITY = "bogota";
+        final String CAPACITY = "2000";
         Stadium newStadium = Stadium.builder().name(NAME).country(COUNTRY).city(CITY).capacity(CAPACITY).build();
 
         when(stadiumRepository.saveAndFlush(any(Stadium.class))).thenReturn(oldStadium);
@@ -92,11 +93,20 @@ class StadiumServiceImplTest {
         Stadium stadium = Stadium.builder().build();
         Map<String, Object> fields = new HashMap<>();
 
-        fields.put("country", COUNTRY);
+        fields.put("name", NAME);
         when(stadiumRepository.saveAndFlush(any(Stadium.class))).thenReturn(stadium);
 
         Stadium stadiumPartialUpdated = stadiumService.patch(stadium, fields);
         Assertions.assertThat(stadiumPartialUpdated).isNotNull();
-        Assertions.assertThat(stadiumPartialUpdated.getCountry()).isEqualTo(COUNTRY);
+        Assertions.assertThat(stadiumPartialUpdated.getName()).isEqualTo(NAME);
+    }
+
+    @Test
+    void findByName() {
+        when(stadiumRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(Stadium.builder().name(NAME)
+                .build()));
+
+        Optional<Stadium> optionalStadium = stadiumService.findByName(NAME);
+        Assertions.assertThat(optionalStadium).isNotNull();
     }
 }
