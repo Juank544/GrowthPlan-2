@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM_ENDPOINT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -66,21 +67,21 @@ class TeamControllerIntegrationTest {
         teamDTO.setStadium("");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post("/api/team").content(body).contentType(MediaType.APPLICATION_JSON))
+        MvcResult mvcResult = mockMvc.perform(post(TEAM_ENDPOINT).content(body).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.country").value(COUNTRY)).andReturn();
     }
 
     @Test
     void findAllTeams() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/team")).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(TEAM_ENDPOINT)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
     void findTeamById() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/team/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(TEAM_ENDPOINT + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Team B")).andReturn();
     }
@@ -98,7 +99,7 @@ class TeamControllerIntegrationTest {
         teamDTO.setStadium(STADIUM_NAME);
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put("/api/team/{id}", uuidA).content(body)
+        MvcResult mvcResult = mockMvc.perform(put(TEAM_ENDPOINT + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.country").value(COUNTRY)).andExpect(jsonPath("$.stadium").value(STADIUM_NAME))
@@ -107,7 +108,7 @@ class TeamControllerIntegrationTest {
 
     @Test
     void deleteTeam() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete("/api/team/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(delete(TEAM_ENDPOINT + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
                 .andReturn();
     }
 }

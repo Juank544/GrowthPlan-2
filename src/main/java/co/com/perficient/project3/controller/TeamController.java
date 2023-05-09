@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM_ENDPOINT;
+
 @RestController
-@RequestMapping("/api/team")
+@RequestMapping(TEAM_ENDPOINT)
 public class TeamController {
 
     @Autowired

@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM_ENDPOINT;
+
 @RestController
-@RequestMapping("/api/stadium")
+@RequestMapping(STADIUM_ENDPOINT)
 public class StadiumController {
 
     @Autowired

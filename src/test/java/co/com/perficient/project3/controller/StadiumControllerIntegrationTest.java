@@ -21,7 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM_ENDPOINT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -66,7 +71,7 @@ class StadiumControllerIntegrationTest {
         stadiumDTO.setCapacity(CAPACITY);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post("/api/stadium").content(body)
+        MvcResult mvcResult = mockMvc.perform(post(STADIUM_ENDPOINT).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
@@ -76,14 +81,14 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void findAllStadiums() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/stadium")).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM_ENDPOINT)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
     void findStadiumById() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/stadium/{id}", uuidB)).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM_ENDPOINT + "/{id}", uuidB)).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.city").value("City B")).andReturn();
     }
@@ -102,7 +107,7 @@ class StadiumControllerIntegrationTest {
         stadiumDTO.setCapacity(CAPACITY);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put("/api/stadium/{id}", uuidA).content(body)
+        MvcResult mvcResult = mockMvc.perform(put(STADIUM_ENDPOINT + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
@@ -112,7 +117,7 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void deleteStadium() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete("/api/stadium/{id}", uuidA)).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(delete(STADIUM_ENDPOINT + "/{id}", uuidA)).andDo(print())
                 .andExpect(status().isOk()).andReturn();
     }
 
@@ -126,7 +131,7 @@ class StadiumControllerIntegrationTest {
         fields.put("capacity", CAPACITY);
         String body = new ObjectMapper().writeValueAsString(fields);
 
-        MvcResult mvcResult = mockMvc.perform(patch("/api/stadium/{id}", uuidB).content(body)
+        MvcResult mvcResult = mockMvc.perform(patch(STADIUM_ENDPOINT + "/{id}", uuidB).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value("Country B"))
