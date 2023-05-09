@@ -66,14 +66,14 @@ class TeamControllerIntegrationTest {
         teamDTO.setStadium("");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post("/api/team/").content(body).contentType(MediaType.APPLICATION_JSON))
+        MvcResult mvcResult = mockMvc.perform(post("/api/team").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.country").value(COUNTRY)).andReturn();
     }
 
     @Test
     void findAllTeams() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/team/")).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get("/api/team")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }

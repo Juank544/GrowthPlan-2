@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/team/")
+@RequestMapping("/api/team")
 public class TeamController {
 
     @Autowired
@@ -41,14 +41,14 @@ public class TeamController {
         return new ResponseEntity<>(teams, HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<TeamDTO> findTeamById(@PathVariable UUID id) {
         Optional<Team> optionalTeam = teamService.findById(id);
         return optionalTeam.map(team -> new ResponseEntity<>(teamMapper.toDTO(team), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<TeamDTO> updateTeam(@PathVariable UUID id, @RequestBody TeamDTO teamDTO) {
         Optional<Team> optionalTeam = teamService.findById(id);
         if (optionalTeam.isPresent()) {
@@ -58,7 +58,7 @@ public class TeamController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<TeamDTO> deleteTeam(@PathVariable UUID id) {
         teamService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
