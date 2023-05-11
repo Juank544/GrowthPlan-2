@@ -19,8 +19,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
-import java.util.UUID;
 
+import static co.com.perficient.project3.utils.constant.Constants.uuidA;
+import static co.com.perficient.project3.utils.constant.Constants.uuidB;
 import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM_ENDPOINT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,9 +45,6 @@ class TeamControllerIntegrationTest {
     private TeamRepository teamRepository;
     @Autowired
     private StadiumRepository stadiumRepository;
-
-    private final UUID uuidA = UUID.fromString("1852622d-e698-41e9-b682-cf04a5ccf280");
-    private final UUID uuidB = UUID.fromString("f09be61e-682b-46f5-8905-0cd71151063e");
 
     @BeforeEach
     void setUp() {

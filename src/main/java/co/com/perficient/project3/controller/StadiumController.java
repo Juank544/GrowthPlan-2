@@ -6,6 +6,7 @@ import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.service.StadiumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ import java.util.UUID;
 import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM_ENDPOINT;
 
 @RestController
-@RequestMapping(STADIUM_ENDPOINT)
+@RequestMapping(value = STADIUM_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
 public class StadiumController {
 
     @Autowired
@@ -33,7 +34,7 @@ public class StadiumController {
     @Autowired
     private StadiumMapper stadiumMapper;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StadiumDTO> createStadium(@RequestBody StadiumDTO stadiumDTO) {
         Stadium stadium = stadiumService.create(stadiumMapper.toEntity(stadiumDTO));
         return new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.CREATED);
@@ -52,7 +53,7 @@ public class StadiumController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StadiumDTO> updateStadium(@PathVariable UUID id, @RequestBody StadiumDTO stadiumDTO) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
         if (optionalStadium.isPresent()) {
@@ -68,7 +69,7 @@ public class StadiumController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping({"/{id}"})
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StadiumDTO> patchStadium(@PathVariable UUID id, @RequestBody Map<String, Object> fields) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
         if (optionalStadium.isPresent()) {

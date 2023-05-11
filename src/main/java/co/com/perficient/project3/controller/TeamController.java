@@ -6,6 +6,7 @@ import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ import java.util.UUID;
 import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM_ENDPOINT;
 
 @RestController
-@RequestMapping(TEAM_ENDPOINT)
+@RequestMapping(value = TEAM_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
 public class TeamController {
 
     @Autowired
@@ -31,7 +32,7 @@ public class TeamController {
     @Autowired
     private TeamMapper teamMapper;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO) {
         Team team = teamService.create(teamMapper.toEntity(teamDTO));
         return new ResponseEntity<>(teamMapper.toDTO(team), HttpStatus.CREATED);
@@ -50,7 +51,7 @@ public class TeamController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TeamDTO> updateTeam(@PathVariable UUID id, @RequestBody TeamDTO teamDTO) {
         Optional<Team> optionalTeam = teamService.findById(id);
         if (optionalTeam.isPresent()) {

@@ -7,6 +7,7 @@ import co.com.perficient.project3.model.entity.President;
 import co.com.perficient.project3.service.PresidentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ import java.util.UUID;
 import static co.com.perficient.project3.utils.constant.PresidentConstants.PRESIDENT_ENDPOINT;
 
 @RestController
-@RequestMapping(PRESIDENT_ENDPOINT)
+@RequestMapping(value = PRESIDENT_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
 public class PresidentController {
 
     @Autowired
@@ -32,7 +33,7 @@ public class PresidentController {
     @Autowired
     private PresidentMapper presidentMapper;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PresidentDTO> createPresident(@RequestBody PresidentDTO presidentDTO) {
         President president = presidentService.create(presidentMapper.toEntity(presidentDTO));
         return new ResponseEntity<>(presidentMapper.toDTO(president), HttpStatus.CREATED);
@@ -51,7 +52,7 @@ public class PresidentController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PresidentDTO> updatePresident(@PathVariable UUID id, @RequestBody PresidentDTO presidentDTO) {
         Optional<President> optionalPresident = presidentService.findById(id);
         if (optionalPresident.isPresent()) {
