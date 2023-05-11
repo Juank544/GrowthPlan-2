@@ -68,7 +68,8 @@ class TeamControllerIntegrationTest {
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(TEAM_ENDPOINT).content(body).contentType(MediaType.APPLICATION_JSON))
-                .andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name").value(NAME))
+                .andDo(print()).andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.country").value(COUNTRY)).andReturn();
     }
 
