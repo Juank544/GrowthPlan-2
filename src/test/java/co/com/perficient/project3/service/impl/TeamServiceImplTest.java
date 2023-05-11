@@ -3,6 +3,7 @@ package co.com.perficient.project3.service.impl;
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.TeamRepository;
+import com.querydsl.core.types.Predicate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ class TeamServiceImplTest {
     private TeamRepository teamRepository;
 
     final UUID ID_TEAM = UUID.randomUUID();
+    final String NAME = "teamName";
 
     @BeforeEach
     void setUp() {
@@ -63,7 +65,6 @@ class TeamServiceImplTest {
     @Test
     void update() {
         Team oldTeam = Team.builder().build();
-        final String NAME = "teamName";
         final String COUNTRY = "colombia";
         Team newTeam = Team.builder().name(NAME).country(COUNTRY).stadium(Stadium.builder().build()).build();
 
@@ -80,5 +81,13 @@ class TeamServiceImplTest {
     void delete() {
         teamService.delete(UUID.randomUUID());
         verify(teamRepository, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void findByName() {
+        when(teamRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(Team.builder().name(NAME).build()));
+
+        Optional<Team> optionalTeam = teamService.findByName(NAME);
+        Assertions.assertThat(optionalTeam).isNotNull();
     }
 }
