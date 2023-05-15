@@ -11,4 +11,5 @@ public class TeamDTO implements Serializable {
     private String name;
     private String country;
     private String stadium;
+    private String president;
 }
