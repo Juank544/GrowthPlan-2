@@ -13,7 +13,7 @@ public abstract class PresidentMapper {
     @Autowired
     protected TeamService teamService;
 
-    @Mapping(target = "team", expression = "java(teamService.findByName(presidentDTO.getTeam()).orElse(null))")
+    @Mapping(target = "team", expression = "java(teamService.findByName(presidentDTO.team()).orElse(null))")
     public abstract President toEntity(PresidentDTO presidentDTO);
 
     @Mapping(target = "team", source = "team.name")
