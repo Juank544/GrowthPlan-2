@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 public class StadiumServiceImpl implements StadiumService {
@@ -68,5 +69,10 @@ public class StadiumServiceImpl implements StadiumService {
         QStadium stadium = QStadium.stadium;
         Predicate predicateName = stadium.name.equalsIgnoreCase(name);
         return stadiumRepository.findOne(predicateName);
+    }
+
+    @Override
+    public Stream<Stadium> findByCountry(String country) {
+        return stadiumRepository.findAll().stream().filter(stadium -> stadium.getCountry().equalsIgnoreCase(country));
     }
 }

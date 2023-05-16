@@ -78,4 +78,10 @@ public class StadiumController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping("/country/{country}")
+    public ResponseEntity<List<StadiumDTO>> findStadiumsByCountry(@PathVariable String country) {
+        List<StadiumDTO> stadiums = stadiumService.findByCountry(country).map(stadiumMapper::toDTO).toList();
+        return new ResponseEntity<>(stadiums, HttpStatus.OK);
+    }
 }
