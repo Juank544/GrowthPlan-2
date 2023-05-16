@@ -17,6 +17,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,7 @@ class PresidentServiceImplTest {
     private PresidentRepository presidentRepository;
 
     final UUID ID_PRESIDENT = UUID.randomUUID();
+    final String NAME = "presidentName";
 
     @BeforeEach
     void setUp() {
@@ -67,7 +69,6 @@ class PresidentServiceImplTest {
     @Test
     void update() {
         President oldPresident = President.builder().build();
-        final String NAME = "presidentName";
         final String NATIONALITY = "colombian";
         President newPresident = President.builder().name(NAME).nationality(NATIONALITY).birthDate(LocalDate.now())
                 .build();
@@ -85,5 +86,14 @@ class PresidentServiceImplTest {
     void delete() {
         presidentService.delete(UUID.randomUUID());
         verify(presidentRepository, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void findByName() {
+        when(presidentRepository.findByNameEqualsIgnoreCase(anyString())).thenReturn(Optional.of(President.builder()
+                .name(NAME).build()));
+
+        Optional<President> optionalPresident = presidentService.findByName(NAME);
+        Assertions.assertThat(optionalPresident).isNotNull().isPresent();
     }
 }
