@@ -44,4 +44,9 @@ public class PresidentServiceImpl implements PresidentService {
     public void delete(UUID id) {
         presidentRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<President> findByName(String name) {
+        return presidentRepository.findByNameEqualsIgnoreCase(name);
+    }
 }
