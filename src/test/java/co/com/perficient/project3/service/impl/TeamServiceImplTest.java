@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,7 +45,8 @@ class TeamServiceImplTest {
         when(teamRepository.save(any(Team.class))).thenReturn(team);
 
         Team teamCreated = teamService.create(team);
-        Assertions.assertThat(teamCreated).isNotNull();
+        assertNotNull(teamCreated);
+        assertEquals(ID_TEAM, teamCreated.getId());
     }
 
     @Test
@@ -71,10 +74,10 @@ class TeamServiceImplTest {
         when(teamRepository.saveAndFlush(any(Team.class))).thenReturn(oldTeam);
 
         Team teamUpdated = teamService.update(oldTeam, newTeam);
-        Assertions.assertThat(teamUpdated).isNotNull();
-        Assertions.assertThat(teamUpdated.getName()).isEqualTo(NAME);
-        Assertions.assertThat(teamUpdated.getCountry()).isEqualTo(COUNTRY);
-        Assertions.assertThat(teamUpdated.getStadium()).isNotNull();
+        assertNotNull(teamUpdated);
+        assertEquals(NAME, teamUpdated.getName());
+        assertEquals(COUNTRY, teamUpdated.getCountry());
+        assertNotNull(teamUpdated.getStadium());
     }
 
     @Test
@@ -88,6 +91,6 @@ class TeamServiceImplTest {
         when(teamRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(Team.builder().name(NAME).build()));
 
         Optional<Team> optionalTeam = teamService.findByName(NAME);
-        Assertions.assertThat(optionalTeam).isNotNull();
+        Assertions.assertThat(optionalTeam).isNotNull().isPresent();
     }
 }

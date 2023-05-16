@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,7 +43,8 @@ class PresidentServiceImplTest {
         when(presidentRepository.save(any(President.class))).thenReturn(president);
 
         President presidentCreated = presidentService.create(president);
-        Assertions.assertThat(presidentCreated).isNotNull();
+        assertNotNull(presidentCreated);
+        assertEquals(ID_PRESIDENT, presidentCreated.getId());
     }
 
     @Test
@@ -72,10 +75,10 @@ class PresidentServiceImplTest {
         when(presidentRepository.saveAndFlush(any(President.class))).thenReturn(oldPresident);
 
         President presidentUpdated = presidentService.update(oldPresident, newPresident);
-        Assertions.assertThat(presidentUpdated).isNotNull();
-        Assertions.assertThat(presidentUpdated.getName()).isEqualTo(NAME);
-        Assertions.assertThat(presidentUpdated.getNationality()).isEqualTo(NATIONALITY);
-        Assertions.assertThat(presidentUpdated.getBirthDate()).isNotNull();
+        assertNotNull(presidentUpdated);
+        assertEquals(NAME, presidentUpdated.getName());
+        assertEquals(NATIONALITY, presidentUpdated.getNationality());
+        assertNotNull(presidentUpdated.getBirthDate());
     }
 
     @Test

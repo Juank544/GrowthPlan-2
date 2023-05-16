@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,8 +46,8 @@ class StadiumServiceImplTest {
         when(stadiumRepository.save(any(Stadium.class))).thenReturn(stadium);
 
         Stadium stadiumCreated = stadiumService.create(stadium);
-        Assertions.assertThat(stadiumCreated).isNotNull();
-        Assertions.assertThat(stadiumCreated.getId()).isEqualTo(ID_STADIUM);
+        assertNotNull(stadiumCreated);
+        assertEquals(ID_STADIUM, stadiumCreated.getId());
     }
 
     @Test
@@ -75,11 +77,11 @@ class StadiumServiceImplTest {
         when(stadiumRepository.saveAndFlush(any(Stadium.class))).thenReturn(oldStadium);
 
         Stadium stadiumUpdated = stadiumService.update(oldStadium, newStadium);
-        Assertions.assertThat(stadiumUpdated).isNotNull();
-        Assertions.assertThat(stadiumUpdated.getName()).isEqualTo(NAME);
-        Assertions.assertThat(stadiumUpdated.getCountry()).isEqualTo(COUNTRY);
-        Assertions.assertThat(stadiumUpdated.getCity()).isEqualTo(CITY);
-        Assertions.assertThat(stadiumUpdated.getCapacity()).isEqualTo(CAPACITY);
+        assertNotNull(stadiumUpdated);
+        assertEquals(NAME, stadiumUpdated.getName());
+        assertEquals(COUNTRY, stadiumUpdated.getCountry());
+        assertEquals(CITY, stadiumUpdated.getCity());
+        assertEquals(CAPACITY, stadiumUpdated.getCapacity());
     }
 
     @Test
@@ -96,9 +98,9 @@ class StadiumServiceImplTest {
         fields.put("name", NAME);
         when(stadiumRepository.saveAndFlush(any(Stadium.class))).thenReturn(stadium);
 
-        Stadium stadiumPartialUpdated = stadiumService.patch(stadium, fields);
-        Assertions.assertThat(stadiumPartialUpdated).isNotNull();
-        Assertions.assertThat(stadiumPartialUpdated.getName()).isEqualTo(NAME);
+        Stadium stadiumPatched = stadiumService.patch(stadium, fields);
+        assertNotNull(stadiumPatched);
+        assertEquals(NAME, stadiumPatched.getName());
     }
 
     @Test
@@ -107,6 +109,6 @@ class StadiumServiceImplTest {
                 .build()));
 
         Optional<Stadium> optionalStadium = stadiumService.findByName(NAME);
-        Assertions.assertThat(optionalStadium).isNotNull();
+        Assertions.assertThat(optionalStadium).isNotNull().isPresent();
     }
 }
