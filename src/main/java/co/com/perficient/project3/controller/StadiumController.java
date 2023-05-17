@@ -23,10 +23,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM_ENDPOINT;
+import static co.com.perficient.project3.utils.constant.StadiumConstants.COUNTRY;
+import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM;
 
 @RestController
-@RequestMapping(value = STADIUM_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = STADIUM, produces = MediaType.APPLICATION_JSON_VALUE)
 public class StadiumController {
 
     @Autowired
@@ -79,7 +80,7 @@ public class StadiumController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/country/{country}")
+    @GetMapping(COUNTRY + "/{country}")
     public ResponseEntity<List<StadiumDTO>> findStadiumsByCountry(@PathVariable String country) {
         List<StadiumDTO> stadiums = stadiumService.findByCountry(country).map(stadiumMapper::toDTO).toList();
         return new ResponseEntity<>(stadiums, HttpStatus.OK);

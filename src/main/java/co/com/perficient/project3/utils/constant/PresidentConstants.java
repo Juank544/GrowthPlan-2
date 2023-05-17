@@ -5,5 +5,5 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PresidentConstants {
-    public static final String PRESIDENT_ENDPOINT = "/president";
+    public static final String PRESIDENT = "/president";
 }

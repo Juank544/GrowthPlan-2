@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
-import static co.com.perficient.project3.utils.constant.PresidentConstants.PRESIDENT_ENDPOINT;
+import static co.com.perficient.project3.utils.constant.PresidentConstants.PRESIDENT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -61,7 +61,7 @@ class PresidentControllerIntegrationTest {
         PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
         String body = new ObjectMapper().writeValueAsString(presidentDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post(PRESIDENT_ENDPOINT).content(body)
+        MvcResult mvcResult = mockMvc.perform(post(PRESIDENT).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.nationality").value(NATIONALITY)).andExpect(jsonPath("$.birthDate").isNotEmpty())
@@ -70,14 +70,14 @@ class PresidentControllerIntegrationTest {
 
     @Test
     void findAllPresidents() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(PRESIDENT_ENDPOINT)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(PRESIDENT)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
     void findPresidentById() throws Exception {
-        mockMvc.perform(get(PRESIDENT_ENDPOINT + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
+        mockMvc.perform(get(PRESIDENT + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("President B"))
                 .andExpect(jsonPath("$.nationality").value("Nationality B"))
@@ -92,7 +92,7 @@ class PresidentControllerIntegrationTest {
         PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
         String body = new ObjectMapper().writeValueAsString(presidentDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put(PRESIDENT_ENDPOINT + "/{id}", uuidA).content(body)
+        MvcResult mvcResult = mockMvc.perform(put(PRESIDENT + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.nationality").value(NATIONALITY)).andReturn();
@@ -100,7 +100,7 @@ class PresidentControllerIntegrationTest {
 
     @Test
     void deletePresident() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(PRESIDENT_ENDPOINT + "/{id}", uuidA)).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(delete(PRESIDENT + "/{id}", uuidA)).andDo(print())
                 .andExpect(status().isOk()).andReturn();
     }
 }

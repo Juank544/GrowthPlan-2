@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static co.com.perficient.project3.utils.constant.PresidentConstants.PRESIDENT_ENDPOINT;
+import static co.com.perficient.project3.utils.constant.PresidentConstants.PRESIDENT;
 
 @RestController
-@RequestMapping(value = PRESIDENT_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = PRESIDENT, produces = MediaType.APPLICATION_JSON_VALUE)
 public class PresidentController {
 
     @Autowired

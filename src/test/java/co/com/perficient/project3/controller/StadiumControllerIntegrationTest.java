@@ -22,7 +22,8 @@ import java.util.Map;
 
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
-import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM_ENDPOINT;
+import static co.com.perficient.project3.utils.constant.StadiumConstants.COUNTRY;
+import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -62,14 +63,10 @@ class StadiumControllerIntegrationTest {
         final String CITY = "City C";
         final String CAPACITY = "3";
 
-        StadiumDTO stadiumDTO = new StadiumDTO();
-        stadiumDTO.setName(NAME);
-        stadiumDTO.setCountry(COUNTRY);
-        stadiumDTO.setCity(CITY);
-        stadiumDTO.setCapacity(CAPACITY);
+        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post(STADIUM_ENDPOINT).content(body)
+        MvcResult mvcResult = mockMvc.perform(post(STADIUM).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
@@ -79,14 +76,14 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void findAllStadiums() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(STADIUM_ENDPOINT)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
     void findStadiumById() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(STADIUM_ENDPOINT + "/{id}", uuidB)).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM + "/{id}", uuidB)).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.city").value("City B")).andReturn();
     }
@@ -98,14 +95,10 @@ class StadiumControllerIntegrationTest {
         final String CITY = "City D";
         final String CAPACITY = "4";
 
-        StadiumDTO stadiumDTO = new StadiumDTO();
-        stadiumDTO.setName(NAME);
-        stadiumDTO.setCountry(COUNTRY);
-        stadiumDTO.setCity(CITY);
-        stadiumDTO.setCapacity(CAPACITY);
+        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put(STADIUM_ENDPOINT + "/{id}", uuidA).content(body)
+        MvcResult mvcResult = mockMvc.perform(put(STADIUM + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
@@ -115,7 +108,7 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void deleteStadium() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(STADIUM_ENDPOINT + "/{id}", uuidA)).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(delete(STADIUM + "/{id}", uuidA)).andDo(print())
                 .andExpect(status().isOk()).andReturn();
     }
 
@@ -129,7 +122,7 @@ class StadiumControllerIntegrationTest {
         fields.put("capacity", CAPACITY);
         String body = new ObjectMapper().writeValueAsString(fields);
 
-        MvcResult mvcResult = mockMvc.perform(patch(STADIUM_ENDPOINT + "/{id}", uuidB).content(body)
+        MvcResult mvcResult = mockMvc.perform(patch(STADIUM + "/{id}", uuidB).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value("Country B"))
@@ -139,7 +132,7 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void findStadiumsByCountry() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(STADIUM_ENDPOINT + "/country/Country A")).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM + COUNTRY + "/Country A")).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$.size()").value(1)).andReturn();
     }

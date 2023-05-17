@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
-import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM_ENDPOINT;
+import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,13 +59,10 @@ class TeamControllerIntegrationTest {
         final String NAME = "Team C";
         final String COUNTRY = "Country C";
 
-        TeamDTO teamDTO = new TeamDTO();
-        teamDTO.setName(NAME);
-        teamDTO.setCountry(COUNTRY);
-        teamDTO.setStadium("");
+        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, "", "");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post(TEAM_ENDPOINT).content(body).contentType(MediaType.APPLICATION_JSON))
+        MvcResult mvcResult = mockMvc.perform(post(TEAM).content(body).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.country").value(COUNTRY)).andReturn();
@@ -73,14 +70,14 @@ class TeamControllerIntegrationTest {
 
     @Test
     void findAllTeams() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(TEAM_ENDPOINT)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(TEAM)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
     void findTeamById() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(TEAM_ENDPOINT + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(TEAM + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Team B")).andReturn();
     }
@@ -92,13 +89,10 @@ class TeamControllerIntegrationTest {
 
         final String NAME = "Team D";
         final String COUNTRY = "Country D";
-        TeamDTO teamDTO = new TeamDTO();
-        teamDTO.setName(NAME);
-        teamDTO.setCountry(COUNTRY);
-        teamDTO.setStadium(STADIUM_NAME);
+        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, STADIUM_NAME, "");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put(TEAM_ENDPOINT + "/{id}", uuidA).content(body)
+        MvcResult mvcResult = mockMvc.perform(put(TEAM + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
                 .andExpect(jsonPath("$.country").value(COUNTRY)).andExpect(jsonPath("$.stadium").value(STADIUM_NAME))
@@ -107,7 +101,7 @@ class TeamControllerIntegrationTest {
 
     @Test
     void deleteTeam() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(TEAM_ENDPOINT + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(delete(TEAM + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
                 .andReturn();
     }
 }

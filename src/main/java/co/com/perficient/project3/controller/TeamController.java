@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM_ENDPOINT;
+import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM;
 
 @RestController
-@RequestMapping(value = TEAM_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = TEAM, produces = MediaType.APPLICATION_JSON_VALUE)
 public class TeamController {
 
     @Autowired

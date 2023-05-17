@@ -5,5 +5,5 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TeamConstants {
-    public static final String TEAM_ENDPOINT = "/team";
+    public static final String TEAM = "/team";
 }
