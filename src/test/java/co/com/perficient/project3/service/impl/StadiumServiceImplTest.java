@@ -63,9 +63,13 @@ class StadiumServiceImplTest {
 
     @Test
     void findById() {
-        when(stadiumRepository.findById(any(UUID.class))).thenReturn(Optional.of(Stadium.builder().id(ID_STADIUM).build()));
+        Stadium stadium = Stadium.builder().id(ID_STADIUM).build();
+
+        when(stadiumRepository.findById(any(UUID.class))).thenReturn(Optional.of(stadium));
 
         Optional<Stadium> optionalStadium = stadiumService.findById(ID_STADIUM);
+        assertNotNull(optionalStadium);
+        assertEquals(stadium, optionalStadium.get());
         Assertions.assertThat(optionalStadium).isNotNull().isPresent();
     }
 
@@ -107,11 +111,13 @@ class StadiumServiceImplTest {
 
     @Test
     void findByName() {
-        when(stadiumRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(Stadium.builder().name(NAME)
-                .build()));
+        Stadium stadium = Stadium.builder().name(NAME).build();
+
+        when(stadiumRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(stadium));
 
         Optional<Stadium> optionalStadium = stadiumService.findByName(NAME);
-        Assertions.assertThat(optionalStadium).isNotNull().isPresent();
+        assertNotNull(optionalStadium);
+        assertEquals(stadium, optionalStadium.get());
     }
 
     @Test

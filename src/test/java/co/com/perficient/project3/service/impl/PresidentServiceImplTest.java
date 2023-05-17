@@ -59,11 +59,13 @@ class PresidentServiceImplTest {
 
     @Test
     void findById() {
-        when(presidentRepository.findById(any(UUID.class))).thenReturn(Optional.of(President.builder().id(ID_PRESIDENT)
-                .build()));
+        President president = President.builder().id(ID_PRESIDENT).build();
+
+        when(presidentRepository.findById(any(UUID.class))).thenReturn(Optional.of(president));
 
         Optional<President> optionalPresident = presidentService.findById(ID_PRESIDENT);
-        Assertions.assertThat(optionalPresident).isNotNull().isPresent();
+        assertNotNull(optionalPresident);
+        assertEquals(president, optionalPresident.get());
     }
 
     @Test
@@ -90,10 +92,12 @@ class PresidentServiceImplTest {
 
     @Test
     void findByName() {
-        when(presidentRepository.findByNameEqualsIgnoreCase(anyString())).thenReturn(Optional.of(President.builder()
-                .name(NAME).build()));
+        President president = President.builder().name(NAME).build();
+
+        when(presidentRepository.findByNameEqualsIgnoreCase(anyString())).thenReturn(Optional.of(president));
 
         Optional<President> optionalPresident = presidentService.findByName(NAME);
-        Assertions.assertThat(optionalPresident).isNotNull().isPresent();
+        assertNotNull(optionalPresident);
+        assertEquals(president, optionalPresident.get());
     }
 }

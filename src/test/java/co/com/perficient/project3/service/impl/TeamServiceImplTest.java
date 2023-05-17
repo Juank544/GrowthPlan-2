@@ -59,9 +59,13 @@ class TeamServiceImplTest {
 
     @Test
     void findById() {
-        when(teamRepository.findById(any(UUID.class))).thenReturn(Optional.of(Team.builder().id(ID_TEAM).build()));
+        Team team = Team.builder().id(ID_TEAM).build();
+
+        when(teamRepository.findById(any(UUID.class))).thenReturn(Optional.of(team));
 
         Optional<Team> optionalTeam = teamService.findById(ID_TEAM);
+        assertNotNull(optionalTeam);
+        assertEquals(team, optionalTeam.get());
         Assertions.assertThat(optionalTeam).isNotNull().isPresent();
     }
 
@@ -88,9 +92,13 @@ class TeamServiceImplTest {
 
     @Test
     void findByName() {
-        when(teamRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(Team.builder().name(NAME).build()));
+        Team team = Team.builder().name(NAME).build();
+
+        when(teamRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(team));
 
         Optional<Team> optionalTeam = teamService.findByName(NAME);
+        assertNotNull(optionalTeam);
+        assertEquals(team, optionalTeam.get());
         Assertions.assertThat(optionalTeam).isNotNull().isPresent();
     }
 }
