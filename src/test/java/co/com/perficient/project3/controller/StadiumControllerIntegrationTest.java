@@ -136,4 +136,11 @@ class StadiumControllerIntegrationTest {
                 .andExpect(jsonPath("$.city").value("City B")).andExpect(jsonPath("$.capacity").value(CAPACITY))
                 .andReturn();
     }
+
+    @Test
+    void findStadiumsByCountry() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM_ENDPOINT + "/country/Country A")).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$.size()").value(1)).andReturn();
+    }
 }

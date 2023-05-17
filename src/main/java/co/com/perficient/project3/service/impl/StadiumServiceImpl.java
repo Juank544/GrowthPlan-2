@@ -73,6 +73,6 @@ public class StadiumServiceImpl implements StadiumService {
 
     @Override
     public Stream<Stadium> findByCountry(String country) {
-        return stadiumRepository.findAll().stream().filter(stadium -> stadium.getCountry().equalsIgnoreCase(country));
+        return stadiumRepository.findAll().stream().filter(stadium -> country.equalsIgnoreCase(stadium.getCountry()));
     }
 }

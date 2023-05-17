@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,6 +35,7 @@ class StadiumServiceImplTest {
 
     final UUID ID_STADIUM = UUID.randomUUID();
     final String NAME = "stadiumName";
+    final String COUNTRY = "colombia";
 
     @BeforeEach
     void setUp() {
@@ -69,7 +72,6 @@ class StadiumServiceImplTest {
     @Test
     void update() {
         Stadium oldStadium = Stadium.builder().build();
-        final String COUNTRY = "colombia";
         final String CITY = "bogota";
         final String CAPACITY = "2000";
         Stadium newStadium = Stadium.builder().name(NAME).country(COUNTRY).city(CITY).capacity(CAPACITY).build();
@@ -110,5 +112,14 @@ class StadiumServiceImplTest {
 
         Optional<Stadium> optionalStadium = stadiumService.findByName(NAME);
         Assertions.assertThat(optionalStadium).isNotNull().isPresent();
+    }
+
+    @Test
+    void findByCountry() {
+        when(stadiumRepository.findAll()).thenReturn(Arrays.asList(Stadium.builder().country(COUNTRY)
+                .build(), Stadium.builder().build()));
+
+        Stream<Stadium> stadiums = stadiumService.findByCountry(COUNTRY);
+        Assertions.assertThat(stadiums).isNotNull().isNotEmpty();
     }
 }
