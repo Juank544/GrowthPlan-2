@@ -1,8 +1,10 @@
 package co.com.perficient.project3.service.impl;
 
+import co.com.perficient.project3.model.entity.QTeam;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.TeamRepository;
 import co.com.perficient.project3.service.TeamService;
+import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +44,12 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void delete(UUID id) {
         teamRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Team> findByName(String name) {
+        QTeam team = QTeam.team;
+        Predicate predicateName = team.name.equalsIgnoreCase(name);
+        return teamRepository.findOne(predicateName);
     }
 }

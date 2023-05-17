@@ -19,9 +19,16 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static co.com.perficient.project3.utils.constant.Constants.uuidA;
+import static co.com.perficient.project3.utils.constant.Constants.uuidB;
+import static co.com.perficient.project3.utils.constant.StadiumConstants.COUNTRY;
+import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,9 +45,6 @@ class StadiumControllerIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private StadiumRepository stadiumRepository;
-
-    private final UUID uuidA = UUID.fromString("1852622d-e698-41e9-b682-cf04a5ccf280");
-    private final UUID uuidB = UUID.fromString("f09be61e-682b-46f5-8905-0cd71151063e");
 
     @BeforeEach
     void setUp() {
@@ -59,14 +63,10 @@ class StadiumControllerIntegrationTest {
         final String CITY = "City C";
         final String CAPACITY = "3";
 
-        StadiumDTO stadiumDTO = new StadiumDTO();
-        stadiumDTO.setName(NAME);
-        stadiumDTO.setCountry(COUNTRY);
-        stadiumDTO.setCity(CITY);
-        stadiumDTO.setCapacity(CAPACITY);
+        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post("/api/stadium").content(body)
+        MvcResult mvcResult = mockMvc.perform(post(STADIUM).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
@@ -76,14 +76,14 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void findAllStadiums() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/stadium")).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
     void findStadiumById() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/stadium/{id}", uuidB)).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM + "/{id}", uuidB)).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.city").value("City B")).andReturn();
     }
@@ -95,14 +95,10 @@ class StadiumControllerIntegrationTest {
         final String CITY = "City D";
         final String CAPACITY = "4";
 
-        StadiumDTO stadiumDTO = new StadiumDTO();
-        stadiumDTO.setName(NAME);
-        stadiumDTO.setCountry(COUNTRY);
-        stadiumDTO.setCity(CITY);
-        stadiumDTO.setCapacity(CAPACITY);
+        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put("/api/stadium/{id}", uuidA).content(body)
+        MvcResult mvcResult = mockMvc.perform(put(STADIUM + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
@@ -112,7 +108,7 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void deleteStadium() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete("/api/stadium/{id}", uuidA)).andDo(print())
+        MvcResult mvcResult = mockMvc.perform(delete(STADIUM + "/{id}", uuidA)).andDo(print())
                 .andExpect(status().isOk()).andReturn();
     }
 
@@ -126,11 +122,18 @@ class StadiumControllerIntegrationTest {
         fields.put("capacity", CAPACITY);
         String body = new ObjectMapper().writeValueAsString(fields);
 
-        MvcResult mvcResult = mockMvc.perform(patch("/api/stadium/{id}", uuidB).content(body)
+        MvcResult mvcResult = mockMvc.perform(patch(STADIUM + "/{id}", uuidB).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value("Country B"))
                 .andExpect(jsonPath("$.city").value("City B")).andExpect(jsonPath("$.capacity").value(CAPACITY))
                 .andReturn();
+    }
+
+    @Test
+    void findStadiumsByCountry() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(STADIUM + COUNTRY + "/Country A")).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$.size()").value(1)).andReturn();
     }
 }

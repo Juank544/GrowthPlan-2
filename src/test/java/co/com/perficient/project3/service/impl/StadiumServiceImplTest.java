@@ -9,13 +9,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,6 +35,7 @@ class StadiumServiceImplTest {
 
     final UUID ID_STADIUM = UUID.randomUUID();
     final String NAME = "stadiumName";
+    final String COUNTRY = "colombia";
 
     @BeforeEach
     void setUp() {
@@ -44,8 +49,8 @@ class StadiumServiceImplTest {
         when(stadiumRepository.save(any(Stadium.class))).thenReturn(stadium);
 
         Stadium stadiumCreated = stadiumService.create(stadium);
-        Assertions.assertThat(stadiumCreated).isNotNull();
-        Assertions.assertThat(stadiumCreated.getId()).isEqualTo(ID_STADIUM);
+        assertNotNull(stadiumCreated);
+        assertEquals(ID_STADIUM, stadiumCreated.getId());
     }
 
     @Test
@@ -58,16 +63,19 @@ class StadiumServiceImplTest {
 
     @Test
     void findById() {
-        when(stadiumRepository.findById(any(UUID.class))).thenReturn(Optional.of(Stadium.builder().id(ID_STADIUM).build()));
+        Stadium stadium = Stadium.builder().id(ID_STADIUM).build();
+
+        when(stadiumRepository.findById(any(UUID.class))).thenReturn(Optional.of(stadium));
 
         Optional<Stadium> optionalStadium = stadiumService.findById(ID_STADIUM);
+        assertNotNull(optionalStadium);
+        assertEquals(stadium, optionalStadium.get());
         Assertions.assertThat(optionalStadium).isNotNull().isPresent();
     }
 
     @Test
     void update() {
         Stadium oldStadium = Stadium.builder().build();
-        final String COUNTRY = "colombia";
         final String CITY = "bogota";
         final String CAPACITY = "2000";
         Stadium newStadium = Stadium.builder().name(NAME).country(COUNTRY).city(CITY).capacity(CAPACITY).build();
@@ -75,11 +83,11 @@ class StadiumServiceImplTest {
         when(stadiumRepository.saveAndFlush(any(Stadium.class))).thenReturn(oldStadium);
 
         Stadium stadiumUpdated = stadiumService.update(oldStadium, newStadium);
-        Assertions.assertThat(stadiumUpdated).isNotNull();
-        Assertions.assertThat(stadiumUpdated.getName()).isEqualTo(NAME);
-        Assertions.assertThat(stadiumUpdated.getCountry()).isEqualTo(COUNTRY);
-        Assertions.assertThat(stadiumUpdated.getCity()).isEqualTo(CITY);
-        Assertions.assertThat(stadiumUpdated.getCapacity()).isEqualTo(CAPACITY);
+        assertNotNull(stadiumUpdated);
+        assertEquals(NAME, stadiumUpdated.getName());
+        assertEquals(COUNTRY, stadiumUpdated.getCountry());
+        assertEquals(CITY, stadiumUpdated.getCity());
+        assertEquals(CAPACITY, stadiumUpdated.getCapacity());
     }
 
     @Test
@@ -96,17 +104,28 @@ class StadiumServiceImplTest {
         fields.put("name", NAME);
         when(stadiumRepository.saveAndFlush(any(Stadium.class))).thenReturn(stadium);
 
-        Stadium stadiumPartialUpdated = stadiumService.patch(stadium, fields);
-        Assertions.assertThat(stadiumPartialUpdated).isNotNull();
-        Assertions.assertThat(stadiumPartialUpdated.getName()).isEqualTo(NAME);
+        Stadium stadiumPatched = stadiumService.patch(stadium, fields);
+        assertNotNull(stadiumPatched);
+        assertEquals(NAME, stadiumPatched.getName());
     }
 
     @Test
     void findByName() {
-        when(stadiumRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(Stadium.builder().name(NAME)
-                .build()));
+        Stadium stadium = Stadium.builder().name(NAME).build();
+
+        when(stadiumRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(stadium));
 
         Optional<Stadium> optionalStadium = stadiumService.findByName(NAME);
-        Assertions.assertThat(optionalStadium).isNotNull();
+        assertNotNull(optionalStadium);
+        assertEquals(stadium, optionalStadium.get());
+    }
+
+    @Test
+    void findByCountry() {
+        when(stadiumRepository.findAll()).thenReturn(Arrays.asList(Stadium.builder().country(COUNTRY)
+                .build(), Stadium.builder().build()));
+
+        Stream<Stadium> stadiums = stadiumService.findByCountry(COUNTRY);
+        Assertions.assertThat(stadiums).isNotNull().isNotEmpty();
     }
 }

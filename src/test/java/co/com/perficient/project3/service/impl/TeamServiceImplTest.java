@@ -3,6 +3,7 @@ package co.com.perficient.project3.service.impl;
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.TeamRepository;
+import com.querydsl.core.types.Predicate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,6 +31,7 @@ class TeamServiceImplTest {
     private TeamRepository teamRepository;
 
     final UUID ID_TEAM = UUID.randomUUID();
+    final String NAME = "teamName";
 
     @BeforeEach
     void setUp() {
@@ -41,7 +45,8 @@ class TeamServiceImplTest {
         when(teamRepository.save(any(Team.class))).thenReturn(team);
 
         Team teamCreated = teamService.create(team);
-        Assertions.assertThat(teamCreated).isNotNull();
+        assertNotNull(teamCreated);
+        assertEquals(ID_TEAM, teamCreated.getId());
     }
 
     @Test
@@ -54,31 +59,46 @@ class TeamServiceImplTest {
 
     @Test
     void findById() {
-        when(teamRepository.findById(any(UUID.class))).thenReturn(Optional.of(Team.builder().id(ID_TEAM).build()));
+        Team team = Team.builder().id(ID_TEAM).build();
+
+        when(teamRepository.findById(any(UUID.class))).thenReturn(Optional.of(team));
 
         Optional<Team> optionalTeam = teamService.findById(ID_TEAM);
+        assertNotNull(optionalTeam);
+        assertEquals(team, optionalTeam.get());
         Assertions.assertThat(optionalTeam).isNotNull().isPresent();
     }
 
     @Test
     void update() {
         Team oldTeam = Team.builder().build();
-        final String NAME = "teamName";
         final String COUNTRY = "colombia";
         Team newTeam = Team.builder().name(NAME).country(COUNTRY).stadium(Stadium.builder().build()).build();
 
         when(teamRepository.saveAndFlush(any(Team.class))).thenReturn(oldTeam);
 
         Team teamUpdated = teamService.update(oldTeam, newTeam);
-        Assertions.assertThat(teamUpdated).isNotNull();
-        Assertions.assertThat(teamUpdated.getName()).isEqualTo(NAME);
-        Assertions.assertThat(teamUpdated.getCountry()).isEqualTo(COUNTRY);
-        Assertions.assertThat(teamUpdated.getStadium()).isNotNull();
+        assertNotNull(teamUpdated);
+        assertEquals(NAME, teamUpdated.getName());
+        assertEquals(COUNTRY, teamUpdated.getCountry());
+        assertNotNull(teamUpdated.getStadium());
     }
 
     @Test
     void delete() {
         teamService.delete(UUID.randomUUID());
         verify(teamRepository, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void findByName() {
+        Team team = Team.builder().name(NAME).build();
+
+        when(teamRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(team));
+
+        Optional<Team> optionalTeam = teamService.findByName(NAME);
+        assertNotNull(optionalTeam);
+        assertEquals(team, optionalTeam.get());
+        Assertions.assertThat(optionalTeam).isNotNull().isPresent();
     }
 }
