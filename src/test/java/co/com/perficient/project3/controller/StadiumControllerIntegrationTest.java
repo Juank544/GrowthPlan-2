@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
+import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
 import static co.com.perficient.project3.utils.constant.StadiumConstants.COUNTRY;
@@ -69,7 +71,7 @@ class StadiumControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(post(STADIUM).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME)).andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY))
                 .andExpect(jsonPath("$.city").value(CITY)).andExpect(jsonPath("$.capacity").value(CAPACITY))
                 .andReturn();
     }
@@ -101,7 +103,7 @@ class StadiumControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(put(STADIUM + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value(COUNTRY))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME)).andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY))
                 .andExpect(jsonPath("$.city").value(CITY)).andExpect(jsonPath("$.capacity").value(CAPACITY))
                 .andReturn();
     }
@@ -125,7 +127,7 @@ class StadiumControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(patch(STADIUM + "/{id}", uuidB).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(NAME)).andExpect(jsonPath("$.country").value("Country B"))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME)).andExpect(jsonPath(COUNTRY_JSONPATH).value("Country B"))
                 .andExpect(jsonPath("$.city").value("City B")).andExpect(jsonPath("$.capacity").value(CAPACITY))
                 .andReturn();
     }

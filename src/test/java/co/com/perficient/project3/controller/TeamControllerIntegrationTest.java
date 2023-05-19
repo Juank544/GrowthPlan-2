@@ -20,6 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
+import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
 import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM;
@@ -64,8 +66,9 @@ class TeamControllerIntegrationTest {
 
         MvcResult mvcResult = mockMvc.perform(post(TEAM).content(body).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
-                .andExpect(jsonPath("$.country").value(COUNTRY)).andReturn();
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
+                .andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY)).andReturn();
     }
 
     @Test
@@ -79,7 +82,7 @@ class TeamControllerIntegrationTest {
     void findTeamById() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(TEAM + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Team B")).andReturn();
+                .andExpect(jsonPath(NAME_JSONPATH).value("Team B")).andReturn();
     }
 
     @Test
@@ -94,8 +97,10 @@ class TeamControllerIntegrationTest {
 
         MvcResult mvcResult = mockMvc.perform(put(TEAM + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
-                .andExpect(jsonPath("$.country").value(COUNTRY)).andExpect(jsonPath("$.stadium").value(STADIUM_NAME))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
+                .andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY))
+                .andExpect(jsonPath("$.stadium").value(STADIUM_NAME))
                 .andReturn();
     }
 

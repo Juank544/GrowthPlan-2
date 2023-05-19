@@ -19,6 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import static co.com.perficient.project3.utils.constant.Constants.BIRTHDATE_JSONPATH;
+import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
+import static co.com.perficient.project3.utils.constant.Constants.NATIONALITY_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
 import static co.com.perficient.project3.utils.constant.PresidentConstants.PRESIDENT;
@@ -63,8 +66,10 @@ class PresidentControllerIntegrationTest {
 
         MvcResult mvcResult = mockMvc.perform(post(PRESIDENT).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
-                .andExpect(jsonPath("$.nationality").value(NATIONALITY)).andExpect(jsonPath("$.birthDate").isNotEmpty())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY))
+                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty())
                 .andReturn();
     }
 
@@ -79,9 +84,9 @@ class PresidentControllerIntegrationTest {
     void findPresidentById() throws Exception {
         mockMvc.perform(get(PRESIDENT + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("President B"))
-                .andExpect(jsonPath("$.nationality").value("Nationality B"))
-                .andExpect(jsonPath("$.birthDate").isNotEmpty()).andReturn();
+                .andExpect(jsonPath(NAME_JSONPATH).value("President B"))
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value("Nationality B"))
+                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty()).andReturn();
     }
 
     @Test
@@ -94,8 +99,9 @@ class PresidentControllerIntegrationTest {
 
         MvcResult mvcResult = mockMvc.perform(put(PRESIDENT + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
-                .andExpect(jsonPath("$.nationality").value(NATIONALITY)).andReturn();
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY)).andReturn();
     }
 
     @Test

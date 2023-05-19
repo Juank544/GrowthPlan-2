@@ -20,6 +20,9 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 import static co.com.perficient.project3.utils.constant.CoachConstants.COACH;
+import static co.com.perficient.project3.utils.constant.Constants.BIRTHDATE_JSONPATH;
+import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
+import static co.com.perficient.project3.utils.constant.Constants.NATIONALITY_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -63,8 +66,10 @@ class CoachControllerIntegrationTest {
 
         MvcResult mvcResult = mockMvc.perform(post(COACH).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
-                .andExpect(jsonPath("$.nationality").value(NATIONALITY)).andExpect(jsonPath("$.birthDate").isNotEmpty())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY))
+                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty())
                 .andReturn();
     }
 
@@ -79,9 +84,9 @@ class CoachControllerIntegrationTest {
     void findCoachById() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(COACH + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Coach B"))
-                .andExpect(jsonPath("$.nationality").value("Nationality B"))
-                .andExpect(jsonPath("$.birthDate").isNotEmpty()).andReturn();
+                .andExpect(jsonPath(NAME_JSONPATH).value("Coach B"))
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value("Nationality B"))
+                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty()).andReturn();
     }
 
     @Test
@@ -94,8 +99,9 @@ class CoachControllerIntegrationTest {
 
         MvcResult mvcResult = mockMvc.perform(put(COACH + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.name").value(NAME))
-                .andExpect(jsonPath("$.nationality").value(NATIONALITY)).andReturn();
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY)).andReturn();
     }
 
     @Test
