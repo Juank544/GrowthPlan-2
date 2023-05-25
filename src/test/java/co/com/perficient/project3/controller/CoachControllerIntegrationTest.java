@@ -1,10 +1,8 @@
 package co.com.perficient.project3.controller;
 
-import co.com.perficient.project3.model.dto.TeamDTO;
-import co.com.perficient.project3.model.entity.Stadium;
-import co.com.perficient.project3.model.entity.Team;
-import co.com.perficient.project3.repository.StadiumRepository;
-import co.com.perficient.project3.repository.TeamRepository;
+import co.com.perficient.project3.model.dto.CoachDTO;
+import co.com.perficient.project3.model.entity.Coach;
+import co.com.perficient.project3.repository.CoachRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,13 +16,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
-import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
+import static co.com.perficient.project3.utils.constant.CoachConstants.COACH;
+import static co.com.perficient.project3.utils.constant.Constants.BIRTHDATE_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
+import static co.com.perficient.project3.utils.constant.Constants.NATIONALITY_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
-import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,76 +37,76 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class TeamControllerIntegrationTest {
+class CoachControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private StadiumRepository stadiumRepository;
+    private CoachRepository coachRepository;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-        Team teamA = Team.builder().id(uuidA).name("Team A").country("Country A").build();
-        Team teamB = Team.builder().id(uuidB).name("Team B").country("Country B").build();
-        teamRepository.saveAll(Arrays.asList(teamA, teamB));
+        Coach coachA = Coach.builder().id(uuidA).name("Coach A").nationality("Nationality A")
+                .birthDate(LocalDate.now().minusYears(1)).build();
+        Coach coachB = Coach.builder().id(uuidB).name("Coach B").nationality("Nationality B")
+                .birthDate(LocalDate.now().minusYears(1)).build();
+        coachRepository.saveAll(Arrays.asList(coachA, coachB));
     }
 
     @Test
-    void createTeam() throws Exception {
-        final String NAME = "Team C";
-        final String COUNTRY = "Country C";
+    void createCoach() throws Exception {
+        final String NAME = "Coach C";
+        final String NATIONALITY = "Nationality C";
 
-        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, "", "");
-        String body = new ObjectMapper().writeValueAsString(teamDTO);
+        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
+        String body = new ObjectMapper().writeValueAsString(coachDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post(TEAM).content(body).contentType(MediaType.APPLICATION_JSON))
-                .andDo(print()).andExpect(status().isCreated())
+        MvcResult mvcResult = mockMvc.perform(post(COACH).content(body)
+                        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
-                .andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY)).andReturn();
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY))
+                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty())
+                .andReturn();
     }
 
     @Test
-    void findAllTeams() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(TEAM)).andDo(print()).andExpect(status().isOk())
+    void findAllCoaches() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(COACH)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
 
     @Test
-    void findTeamById() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(TEAM + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
+    void findCoachById() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(COACH + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(NAME_JSONPATH).value("Team B")).andReturn();
+                .andExpect(jsonPath(NAME_JSONPATH).value("Coach B"))
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value("Nationality B"))
+                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty()).andReturn();
     }
 
     @Test
-    void updateTeam() throws Exception {
-        final String STADIUM_NAME = "Stadium D";
-        stadiumRepository.save(Stadium.builder().name(STADIUM_NAME).build());
+    void updateCoach() throws Exception {
+        final String NAME = "Coach D";
+        final String NATIONALITY = "Nationality D";
 
-        final String NAME = "Team D";
-        final String COUNTRY = "Country D";
-        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, STADIUM_NAME, "");
-        String body = new ObjectMapper().writeValueAsString(teamDTO);
+        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
+        String body = new ObjectMapper().writeValueAsString(coachDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put(TEAM + "/{id}", uuidA).content(body)
+        MvcResult mvcResult = mockMvc.perform(put(COACH + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
-                .andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY))
-                .andExpect(jsonPath("$.stadium").value(STADIUM_NAME))
-                .andReturn();
+                .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY)).andReturn();
     }
 
     @Test
-    void deleteTeam() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(TEAM + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
+    void deleteCoach() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(delete(COACH + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
                 .andReturn();
     }
 }

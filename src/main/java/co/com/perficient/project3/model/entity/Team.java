@@ -1,5 +1,6 @@
 package co.com.perficient.project3.model.entity;
 
+import co.com.perficient.project3.utils.UseIdOrGenerate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +26,7 @@ public class Team {
 
     @Id
     @GeneratedValue(generator = "myGenerator")
-    @GenericGenerator(name = "myGenerator", strategy = "co.com.perficient.project3.utils.UseIdOrGenerate")
+    @GenericGenerator(name = "myGenerator", type = UseIdOrGenerate.class)
     private UUID id;
     private String name;
     private String country;

@@ -1,5 +1,6 @@
 package co.com.perficient.project3.model.entity;
 
+import co.com.perficient.project3.utils.UseIdOrGenerate;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -22,7 +23,7 @@ public class Person {
 
     @Id
     @GeneratedValue(generator = "myGenerator")
-    @GenericGenerator(name = "myGenerator", strategy = "co.com.perficient.project3.utils.UseIdOrGenerate")
+    @GenericGenerator(name = "myGenerator", type = UseIdOrGenerate.class)
     private UUID id;
     private String name;
     private String nationality;
