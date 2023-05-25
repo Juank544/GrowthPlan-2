@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,7 +25,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException(username + "not found");
         }
-        return new User(optionalUser.get().getUsername(), optionalUser.get()
-                .getPassword(), Collections.singletonList(new SimpleGrantedAuthority(optionalUser.get().getRole())));
+        List<SimpleGrantedAuthority> authorities = optionalUser.get().getAuthorities().stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getName())).toList();
+
+        return new User(optionalUser.get().getUsername(), optionalUser.get().getPassword(), authorities);
     }
 }
