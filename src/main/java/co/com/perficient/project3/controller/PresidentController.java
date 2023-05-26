@@ -2,7 +2,6 @@ package co.com.perficient.project3.controller;
 
 import co.com.perficient.project3.mapper.PresidentMapper;
 import co.com.perficient.project3.model.dto.PresidentDTO;
-import co.com.perficient.project3.model.dto.TeamDTO;
 import co.com.perficient.project3.model.entity.President;
 import co.com.perficient.project3.service.PresidentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +62,7 @@ public class PresidentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TeamDTO> deletePresident(@PathVariable UUID id) {
+    public ResponseEntity<PresidentDTO> deletePresident(@PathVariable UUID id) {
         presidentService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

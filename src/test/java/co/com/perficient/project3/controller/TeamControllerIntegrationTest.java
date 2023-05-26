@@ -61,7 +61,7 @@ class TeamControllerIntegrationTest {
         final String NAME = "Team C";
         final String COUNTRY = "Country C";
 
-        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, "", "");
+        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, "", "", "");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(TEAM).content(body).contentType(MediaType.APPLICATION_JSON))
@@ -92,7 +92,7 @@ class TeamControllerIntegrationTest {
 
         final String NAME = "Team D";
         final String COUNTRY = "Country D";
-        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, STADIUM_NAME, "");
+        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, STADIUM_NAME, "", "");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(TEAM + "/{id}", uuidA).content(body)
