@@ -70,7 +70,7 @@ class StadiumServiceImplTest {
         Optional<Stadium> optionalStadium = stadiumService.findById(ID_STADIUM);
         assertNotNull(optionalStadium);
         assertEquals(stadium, optionalStadium.get());
-        Assertions.assertThat(optionalStadium).isNotNull().isPresent();
+        Assertions.assertThat(optionalStadium).isPresent();
     }
 
     @Test

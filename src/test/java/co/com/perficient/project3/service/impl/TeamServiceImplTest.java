@@ -66,7 +66,7 @@ class TeamServiceImplTest {
         Optional<Team> optionalTeam = teamService.findById(ID_TEAM);
         assertNotNull(optionalTeam);
         assertEquals(team, optionalTeam.get());
-        Assertions.assertThat(optionalTeam).isNotNull().isPresent();
+        Assertions.assertThat(optionalTeam).isPresent();
     }
 
     @Test

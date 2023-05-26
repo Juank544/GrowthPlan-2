@@ -64,6 +64,7 @@ class CoachServiceImplTest {
         Optional<Coach> optionalCoach = coachService.findById(ID_COACH);
         assertNotNull(optionalCoach);
         assertEquals(coach, optionalCoach.get());
+        Assertions.assertThat(optionalCoach).isPresent();
     }
 
     @Test

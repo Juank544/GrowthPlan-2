@@ -66,6 +66,7 @@ class PresidentServiceImplTest {
         Optional<President> optionalPresident = presidentService.findById(ID_PRESIDENT);
         assertNotNull(optionalPresident);
         assertEquals(president, optionalPresident.get());
+        Assertions.assertThat(optionalPresident).isPresent();
     }
 
     @Test
