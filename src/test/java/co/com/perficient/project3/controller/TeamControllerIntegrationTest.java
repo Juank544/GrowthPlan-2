@@ -20,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
@@ -108,5 +109,12 @@ class TeamControllerIntegrationTest {
     void deleteTeam() throws Exception {
         MvcResult mvcResult = mockMvc.perform(delete(TEAM + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
                 .andReturn();
+    }
+
+    @Test
+    void findTeamsByCountry() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(TEAM + COUNTRY + "/Country A")).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$.size()").value(1)).andReturn();
     }
 }

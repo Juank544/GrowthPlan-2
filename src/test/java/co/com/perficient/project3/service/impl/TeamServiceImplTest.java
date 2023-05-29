@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,6 +34,7 @@ class TeamServiceImplTest {
 
     final UUID ID_TEAM = UUID.randomUUID();
     final String NAME = "teamName";
+    final String COUNTRY = "colombia";
 
     @BeforeEach
     void setUp() {
@@ -72,7 +75,6 @@ class TeamServiceImplTest {
     @Test
     void update() {
         Team oldTeam = Team.builder().build();
-        final String COUNTRY = "colombia";
         Team newTeam = Team.builder().name(NAME).country(COUNTRY).stadium(Stadium.builder().build()).build();
 
         when(teamRepository.saveAndFlush(any(Team.class))).thenReturn(oldTeam);
@@ -100,5 +102,16 @@ class TeamServiceImplTest {
         assertNotNull(optionalTeam);
         assertEquals(team, optionalTeam.get());
         Assertions.assertThat(optionalTeam).isNotNull().isPresent();
+    }
+
+    @Test
+    void findAllByCountry() {
+        Team team = Team.builder().country(COUNTRY).build();
+
+        when(teamRepository.findAllByCountryEqualsIgnoreCase(anyString(), any(Pageable.class))).thenReturn(Collections.nCopies(5, team));
+
+        List<Team> teams = teamService.findAllByCountry(COUNTRY, null);
+        assertNotNull(teams);
+        assertEquals(5, teams.size());
     }
 }
