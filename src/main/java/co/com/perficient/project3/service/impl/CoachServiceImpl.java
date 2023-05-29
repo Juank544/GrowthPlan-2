@@ -44,4 +44,9 @@ public class CoachServiceImpl implements CoachService {
     public void delete(UUID id) {
         coachRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<Coach> findByName(String name) {
+        return coachRepository.findByNameEqualsIgnoreCase(name);
+    }
 }

@@ -17,6 +17,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,7 @@ class CoachServiceImplTest {
     private CoachRepository coachRepository;
 
     final UUID ID_COACH = UUID.randomUUID();
+    final String NAME = "coachName";
 
     @BeforeEach
     void setUp() {
@@ -70,7 +72,6 @@ class CoachServiceImplTest {
     @Test
     void update() {
         Coach oldCoach = Coach.builder().build();
-        final String NAME = "coachName";
         final String NATIONALITY = "colombian";
         Coach newCoach = Coach.builder().name(NAME).nationality(NATIONALITY).birthDate(LocalDate.now()).build();
 
@@ -88,5 +89,16 @@ class CoachServiceImplTest {
         coachService.delete(UUID.randomUUID());
 
         verify(coachRepository, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void findByName() {
+        Coach coach = Coach.builder().name(NAME).build();
+
+        when(coachRepository.findByNameEqualsIgnoreCase(anyString())).thenReturn(Optional.of(coach));
+
+        Optional<Coach> optionalCoach = coachService.findByName(NAME);
+        assertNotNull(optionalCoach);
+        assertEquals(coach, optionalCoach.get());
     }
 }
