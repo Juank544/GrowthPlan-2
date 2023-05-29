@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,9 +56,6 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<Team> findAllByCountry(String country, Integer size) {
-        if (Objects.isNull(size)) {
-            size = 5;
-        }
         return teamRepository.findAllByCountryEqualsIgnoreCase(country, Pageable.ofSize(size));
     }
 }

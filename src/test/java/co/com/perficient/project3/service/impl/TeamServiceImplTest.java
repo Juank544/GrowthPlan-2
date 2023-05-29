@@ -110,7 +110,7 @@ class TeamServiceImplTest {
 
         when(teamRepository.findAllByCountryEqualsIgnoreCase(anyString(), any(Pageable.class))).thenReturn(Collections.nCopies(5, team));
 
-        List<Team> teams = teamService.findAllByCountry(COUNTRY, null);
+        List<Team> teams = teamService.findAllByCountry(COUNTRY, 5);
         assertNotNull(teams);
         assertEquals(5, teams.size());
     }

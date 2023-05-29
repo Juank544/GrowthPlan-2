@@ -70,7 +70,7 @@ public class TeamController {
     }
 
     @GetMapping(COUNTRY + "/{country}")
-    public ResponseEntity<List<TeamDTO>> findTeamsByCountry(@PathVariable String country, @RequestParam(required = false) Integer size) {
+    public ResponseEntity<List<TeamDTO>> findTeamsByCountry(@PathVariable String country, @RequestParam(defaultValue = "5") Integer size) {
         List<TeamDTO> teams = teamService.findAllByCountry(country, size).stream().map(teamMapper::toDTO).toList();
         return new ResponseEntity<>(teams, HttpStatus.OK);
     }
