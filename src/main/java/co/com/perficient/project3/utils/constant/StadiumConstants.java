@@ -6,5 +6,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StadiumConstants {
     public static final String STADIUM = "/stadium";
-    public static final String COUNTRY = "/country";
 }

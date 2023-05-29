@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM;
 
 @RestController
@@ -65,5 +67,11 @@ public class TeamController {
     public ResponseEntity<TeamDTO> deleteTeam(@PathVariable UUID id) {
         teamService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(COUNTRY + "/{country}")
+    public ResponseEntity<List<TeamDTO>> findTeamsByCountry(@PathVariable String country, @RequestParam(required = false) Integer size) {
+        List<TeamDTO> teams = teamService.findAllByCountry(country, size).stream().map(teamMapper::toDTO).toList();
+        return new ResponseEntity<>(teams, HttpStatus.OK);
     }
 }

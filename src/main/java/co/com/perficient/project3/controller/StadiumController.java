@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static co.com.perficient.project3.utils.constant.StadiumConstants.COUNTRY;
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM;
 
 @RestController

@@ -6,9 +6,11 @@ import co.com.perficient.project3.repository.TeamRepository;
 import co.com.perficient.project3.service.TeamService;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,5 +53,13 @@ public class TeamServiceImpl implements TeamService {
         QTeam team = QTeam.team;
         Predicate predicateName = team.name.equalsIgnoreCase(name);
         return teamRepository.findOne(predicateName);
+    }
+
+    @Override
+    public List<Team> findAllByCountry(String country, Integer size) {
+        if (Objects.isNull(size)) {
+            size = 5;
+        }
+        return teamRepository.findAllByCountryEqualsIgnoreCase(country, Pageable.ofSize(size));
     }
 }

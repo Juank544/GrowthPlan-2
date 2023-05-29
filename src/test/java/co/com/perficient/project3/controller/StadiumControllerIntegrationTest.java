@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
-import static co.com.perficient.project3.utils.constant.StadiumConstants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
