@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class MatchControllerTest {
+class MatchControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -48,7 +48,7 @@ class MatchControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         Match matchA = Match.builder().id(uuidA).date(LocalDate.now().minusYears(1)).round("Last 8").status("Played")
                 .score("2-0").build();
-        Match matchB = Match.builder().id(uuidB).date(LocalDate.now().plusYears(1)).round("Final").status("To play")
+        Match matchB = Match.builder().id(uuidB).date(LocalDate.now().minusYears(2)).round("Final").status("To play")
                 .score("0-0").build();
         matchRepository.saveAll(Arrays.asList(matchA, matchB));
     }
@@ -59,7 +59,7 @@ class MatchControllerTest {
         final String STATUS = "Played";
         final String SCORE = "2-0";
 
-        MatchDTO matchDTO = new MatchDTO(LocalDate.now().toString(), "", ROUND, STATUS, SCORE, "", "");
+        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", ROUND, STATUS, SCORE, "", "");
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(MATCH).content(body)
