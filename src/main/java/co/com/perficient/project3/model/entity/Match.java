@@ -34,7 +34,6 @@ public class Match {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_STADIUM_ID"))
     private Stadium stadium;
     private String round;
-    private String status;
     private String score;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_HOME_TEAM_ID"))

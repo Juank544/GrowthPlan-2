@@ -73,10 +73,9 @@ class MatchServiceImplTest {
     void update() {
         Match oldMatch = Match.builder().build();
         final String ROUND = "lAST 16";
-        final String STATUS = "played";
         final String SCORE = "1-0";
         Match newMatch = Match.builder().date(LocalDate.now()).stadium(Stadium.builder().build()).round(ROUND)
-                .status(STATUS).score(SCORE).homeTeam(Team.builder().name("homeTeam").build())
+                .score(SCORE).homeTeam(Team.builder().name("homeTeam").build())
                 .awayTeam(Team.builder().name("awayTeam").build()).build();
 
         when(matchRepository.saveAndFlush(any(Match.class))).thenReturn(oldMatch);
@@ -86,7 +85,6 @@ class MatchServiceImplTest {
         assertNotNull(matchUpdated.getDate());
         assertNotNull(matchUpdated.getStadium());
         assertEquals(ROUND, matchUpdated.getRound());
-        assertEquals(STATUS, matchUpdated.getStatus());
         assertEquals(SCORE, matchUpdated.getScore());
         assertEquals("homeTeam", matchUpdated.getHomeTeam().getName());
         assertEquals("awayTeam", matchUpdated.getAwayTeam().getName());

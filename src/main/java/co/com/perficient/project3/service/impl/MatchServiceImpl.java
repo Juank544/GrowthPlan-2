@@ -36,7 +36,6 @@ public class MatchServiceImpl implements MatchService {
         oldMatch.setDate(newMatch.getDate());
         oldMatch.setStadium(newMatch.getStadium());
         oldMatch.setRound(newMatch.getRound());
-        oldMatch.setStatus(newMatch.getStatus());
         oldMatch.setScore(newMatch.getScore());
         oldMatch.setHomeTeam(newMatch.getHomeTeam());
         oldMatch.setAwayTeam(newMatch.getAwayTeam());

@@ -46,27 +46,25 @@ class MatchControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-        Match matchA = Match.builder().id(uuidA).date(LocalDate.now().minusYears(1)).round("Last 8").status("Played")
-                .score("2-0").build();
-        Match matchB = Match.builder().id(uuidB).date(LocalDate.now().minusYears(2)).round("Final").status("To play")
-                .score("0-0").build();
+        Match matchA = Match.builder().id(uuidA).date(LocalDate.now().minusYears(1)).round("Last 8").score("2-0")
+                .build();
+        Match matchB = Match.builder().id(uuidB).date(LocalDate.now().minusYears(2)).round("Final").score("0-0")
+                .build();
         matchRepository.saveAll(Arrays.asList(matchA, matchB));
     }
 
     @Test
     void createMatch() throws Exception {
         final String ROUND = "Last 16";
-        final String STATUS = "Played";
         final String SCORE = "2-0";
 
-        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", ROUND, STATUS, SCORE, "", "");
+        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", ROUND, SCORE, "", "");
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post(MATCH).content(body)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
+        MvcResult mvcResult = mockMvc.perform(post(MATCH).content(body).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.date").isNotEmpty())
-                .andExpect(jsonPath("$.round").value(ROUND)).andExpect(jsonPath("$.status").value(STATUS))
-                .andExpect(jsonPath("$.score").value(SCORE)).andReturn();
+                .andExpect(jsonPath("$.round").value(ROUND)).andExpect(jsonPath("$.score").value(SCORE)).andReturn();
     }
 
     @Test
@@ -87,17 +85,15 @@ class MatchControllerIntegrationTest {
     @Test
     void updateMatch() throws Exception {
         final String ROUND = "Semifinal";
-        final String STATUS = "Played";
         final String SCORE = "2-1";
 
-        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", ROUND, STATUS, SCORE, "", "");
+        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", ROUND, SCORE, "", "");
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(MATCH + "/{id}", uuidA).content(body)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.date").isNotEmpty())
-                .andExpect(jsonPath("$.round").value(ROUND)).andExpect(jsonPath("$.status").value(STATUS))
-                .andExpect(jsonPath("$.score").value(SCORE)).andReturn();
+                .andExpect(jsonPath("$.round").value(ROUND)).andExpect(jsonPath("$.score").value(SCORE)).andReturn();
     }
 
     @Test
