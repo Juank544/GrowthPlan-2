@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -39,4 +42,12 @@ public class Team {
     private Coach coach;
     @OneToMany(mappedBy = "team")
     private List<Player> players;
+
+    @PrePersist
+    @PreUpdate
+    private void setCountry() {
+        if (Objects.nonNull(stadium)) {
+            country = stadium.getCountry();
+        }
+    }
 }

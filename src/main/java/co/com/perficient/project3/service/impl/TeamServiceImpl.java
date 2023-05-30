@@ -37,7 +37,6 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Team update(Team oldTeam, Team newTeam) {
         oldTeam.setName(newTeam.getName());
-        oldTeam.setCountry(newTeam.getCountry());
         oldTeam.setStadium(newTeam.getStadium());
         return teamRepository.saveAndFlush(oldTeam);
     }
