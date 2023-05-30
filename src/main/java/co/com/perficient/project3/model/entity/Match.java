@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Past;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Match {
     @GeneratedValue(generator = "myGenerator")
     @GenericGenerator(name = "myGenerator", type = UseIdOrGenerate.class)
     private UUID id;
+    @Past
     private LocalDate date;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_STADIUM_ID"))
