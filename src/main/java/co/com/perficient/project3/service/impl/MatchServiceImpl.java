@@ -2,6 +2,7 @@ package co.com.perficient.project3.service.impl;
 
 import co.com.perficient.project3.model.entity.Match;
 import co.com.perficient.project3.repository.MatchRepository;
+import co.com.perficient.project3.repository.custom.MatchCustomRepository;
 import co.com.perficient.project3.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     private MatchRepository matchRepository;
+    @Autowired
+    private MatchCustomRepository matchCustomRepository;
 
     @Override
     public Match create(Match match) {
@@ -45,5 +48,10 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public void delete(UUID id) {
         matchRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Match> findLast3Matches() {
+        return matchCustomRepository.findLast3Matches();
     }
 }

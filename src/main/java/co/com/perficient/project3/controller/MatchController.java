@@ -66,4 +66,10 @@ public class MatchController {
         matchService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/last")
+    public ResponseEntity<List<MatchDTO>> findLast3Matches() {
+        List<MatchDTO> recentMatches = matchService.findLast3Matches().stream().map(matchMapper::toDTO).toList();
+        return new ResponseEntity<>(recentMatches, HttpStatus.OK);
+    }
 }
