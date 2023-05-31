@@ -69,8 +69,7 @@ class CoachControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
                 .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY))
-                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty())
-                .andReturn();
+                .andExpect(jsonPath(BIRTHDATE_JSONPATH).isNotEmpty()).andReturn();
     }
 
     @Test

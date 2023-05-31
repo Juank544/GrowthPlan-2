@@ -20,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
@@ -58,17 +59,19 @@ class TeamControllerIntegrationTest {
 
     @Test
     void createTeam() throws Exception {
-        final String NAME = "Team C";
+        final String STADIUM_NAME = "Stadium C";
         final String COUNTRY = "Country C";
+        stadiumRepository.save(Stadium.builder().name(STADIUM_NAME).country(COUNTRY).build());
+        final String NAME = "Team C";
 
-        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, "", "");
+        TeamDTO teamDTO = new TeamDTO(NAME, null, STADIUM_NAME, "", "");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(TEAM).content(body).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
-                .andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY)).andReturn();
+                .andExpect(jsonPath(NAME_JSONPATH).value(NAME)).andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY))
+                .andExpect(jsonPath("$.stadium").value(STADIUM_NAME)).andReturn();
     }
 
     @Test
@@ -88,11 +91,11 @@ class TeamControllerIntegrationTest {
     @Test
     void updateTeam() throws Exception {
         final String STADIUM_NAME = "Stadium D";
-        stadiumRepository.save(Stadium.builder().name(STADIUM_NAME).build());
+        final String COUNTRY = "Country D";
+        stadiumRepository.save(Stadium.builder().name(STADIUM_NAME).country(COUNTRY).build());
 
         final String NAME = "Team D";
-        final String COUNTRY = "Country D";
-        TeamDTO teamDTO = new TeamDTO(NAME, COUNTRY, STADIUM_NAME, "");
+        TeamDTO teamDTO = new TeamDTO(NAME, null, STADIUM_NAME, "", "");
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(TEAM + "/{id}", uuidA).content(body)
@@ -108,5 +111,12 @@ class TeamControllerIntegrationTest {
     void deleteTeam() throws Exception {
         MvcResult mvcResult = mockMvc.perform(delete(TEAM + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
                 .andReturn();
+    }
+
+    @Test
+    void findTeamsByCountry() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(TEAM + COUNTRY + "/Country A")).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$.size()").value(1)).andReturn();
     }
 }

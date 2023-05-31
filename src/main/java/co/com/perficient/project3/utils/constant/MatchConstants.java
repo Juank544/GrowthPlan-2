@@ -4,6 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StadiumConstants {
-    public static final String STADIUM = "/stadium";
+public final class MatchConstants {
+    public static final String MATCH = "/match";
 }

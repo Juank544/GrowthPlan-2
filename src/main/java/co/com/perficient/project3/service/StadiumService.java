@@ -13,5 +13,5 @@ public interface StadiumService extends CrudService<Stadium, UUID> {
 
     Optional<Stadium> findByName(String name);
 
-    Stream<Stadium> findByCountry(String country);
+    Stream<Stadium> findAllByCountry(String country);
 }

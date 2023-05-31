@@ -70,7 +70,7 @@ class StadiumServiceImplTest {
         Optional<Stadium> optionalStadium = stadiumService.findById(ID_STADIUM);
         assertNotNull(optionalStadium);
         assertEquals(stadium, optionalStadium.get());
-        Assertions.assertThat(optionalStadium).isNotNull().isPresent();
+        Assertions.assertThat(optionalStadium).isPresent();
     }
 
     @Test
@@ -125,7 +125,7 @@ class StadiumServiceImplTest {
         when(stadiumRepository.findAll()).thenReturn(Arrays.asList(Stadium.builder().country(COUNTRY)
                 .build(), Stadium.builder().build()));
 
-        Stream<Stadium> stadiums = stadiumService.findByCountry(COUNTRY);
+        Stream<Stadium> stadiums = stadiumService.findAllByCountry(COUNTRY);
         Assertions.assertThat(stadiums).isNotNull().isNotEmpty();
     }
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static co.com.perficient.project3.utils.constant.StadiumConstants.COUNTRY;
+import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM;
 
 @RestController
@@ -82,7 +82,7 @@ public class StadiumController {
 
     @GetMapping(COUNTRY + "/{country}")
     public ResponseEntity<List<StadiumDTO>> findStadiumsByCountry(@PathVariable String country) {
-        List<StadiumDTO> stadiums = stadiumService.findByCountry(country).map(stadiumMapper::toDTO).toList();
+        List<StadiumDTO> stadiums = stadiumService.findAllByCountry(country).map(stadiumMapper::toDTO).toList();
         return new ResponseEntity<>(stadiums, HttpStatus.OK);
     }
 }

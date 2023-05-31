@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,6 +24,8 @@ public class UserP3 {
     @GenericGenerator(name = "myGenerator", type = UseIdOrGenerate.class)
     private UUID id;
     private String username;
+    @Email
+    private String email;
     private String password;
     @OneToMany(mappedBy = "userP3", fetch = FetchType.EAGER)
     private Set<Authority> authorities;

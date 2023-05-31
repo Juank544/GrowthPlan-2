@@ -14,10 +14,13 @@ public abstract class TeamMapper {
     protected StadiumService stadiumService;
 
     @Mapping(target = "stadium", expression = "java(stadiumService.findByName(teamDTO.stadium()).orElse(null))")
+    @Mapping(target = "country", ignore = true)
     @Mapping(target = "president", ignore = true)
+    @Mapping(target = "coach", ignore = true)
     public abstract Team toEntity(TeamDTO teamDTO);
 
     @Mapping(target = "stadium", source = "team.stadium.name")
     @Mapping(target = "president", source = "team.president.name")
+    @Mapping(target = "coach", source = "team.coach.name")
     public abstract TeamDTO toDTO(Team team);
 }
