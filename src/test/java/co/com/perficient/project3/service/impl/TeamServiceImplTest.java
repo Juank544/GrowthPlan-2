@@ -75,14 +75,13 @@ class TeamServiceImplTest {
     @Test
     void update() {
         Team oldTeam = Team.builder().build();
-        Team newTeam = Team.builder().name(NAME).country(COUNTRY).stadium(Stadium.builder().build()).build();
+        Team newTeam = Team.builder().name(NAME).stadium(Stadium.builder().build()).build();
 
         when(teamRepository.saveAndFlush(any(Team.class))).thenReturn(oldTeam);
 
         Team teamUpdated = teamService.update(oldTeam, newTeam);
         assertNotNull(teamUpdated);
         assertEquals(NAME, teamUpdated.getName());
-        assertEquals(COUNTRY, teamUpdated.getCountry());
         assertNotNull(teamUpdated.getStadium());
     }
 

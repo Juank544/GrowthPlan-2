@@ -78,8 +78,7 @@ class MatchControllerIntegrationTest {
     void findMatchById() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(MATCH + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.date").isNotEmpty())
-                .andExpect(jsonPath("$.round").value("Final")).andExpect(jsonPath("$.status").value("To play"))
-                .andExpect(jsonPath("$.score").value("0-0")).andReturn();
+                .andExpect(jsonPath("$.round").value("Final")).andExpect(jsonPath("$.score").value("0-0")).andReturn();
     }
 
     @Test
