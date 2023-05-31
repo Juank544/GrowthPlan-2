@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.Past;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -41,4 +44,12 @@ public class Match {
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AWAY_TEAM_ID"))
     private Team awayTeam;
+
+    @PrePersist
+    @PreUpdate
+    private void setStadium() {
+        if (Objects.isNull(stadium) && Objects.nonNull(homeTeam)) {
+            stadium = homeTeam.getStadium();
+        }
+    }
 }

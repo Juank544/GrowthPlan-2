@@ -16,7 +16,7 @@ public abstract class MatchMapper {
     @Autowired
     protected TeamService teamService;
 
-    @Mapping(target = "stadium", expression = "java(stadiumService.findByName(matchDTO.stadium()).orElse(null))")
+    @Mapping(target = "stadium", expression = "java(java.util.Objects.nonNull(matchDTO.stadium()) ? stadiumService.findByName(matchDTO.stadium()).orElse(null) : null)")
     @Mapping(target = "homeTeam", expression = "java(teamService.findByName(matchDTO.homeTeam()).orElse(null))")
     @Mapping(target = "awayTeam", expression = "java(teamService.findByName(matchDTO.awayTeam()).orElse(null))")
     public abstract Match toEntity(MatchDTO matchDTO);
