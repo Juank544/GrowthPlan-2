@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
@@ -105,6 +106,15 @@ class TeamControllerIntegrationTest {
                 .andExpect(jsonPath(COUNTRY_JSONPATH).value(COUNTRY))
                 .andExpect(jsonPath("$.stadium").value(STADIUM_NAME))
                 .andReturn();
+    }
+
+    @Test
+    void updateTeamNotFound() throws Exception {
+        TeamDTO teamDTO = new TeamDTO("", null, "", "", "");
+        String body = new ObjectMapper().writeValueAsString(teamDTO);
+
+        mockMvc.perform(put(TEAM + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

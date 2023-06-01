@@ -19,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY_JSONPATH;
@@ -109,6 +110,15 @@ class StadiumControllerIntegrationTest {
     }
 
     @Test
+    void updateStadiumNotFound() throws Exception {
+        StadiumDTO stadiumDTO = new StadiumDTO("", COUNTRY, "", "");
+        String body = new ObjectMapper().writeValueAsString(stadiumDTO);
+
+        mockMvc.perform(put(STADIUM + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void deleteStadium() throws Exception {
         MvcResult mvcResult = mockMvc.perform(delete(STADIUM + "/{id}", uuidA)).andDo(print())
                 .andExpect(status().isOk()).andReturn();
@@ -130,6 +140,14 @@ class StadiumControllerIntegrationTest {
                 .andExpect(jsonPath(NAME_JSONPATH).value(NAME)).andExpect(jsonPath(COUNTRY_JSONPATH).value("Country B"))
                 .andExpect(jsonPath("$.city").value("City B")).andExpect(jsonPath("$.capacity").value(CAPACITY))
                 .andReturn();
+    }
+
+    @Test
+    void patchStadiumNotFound() throws Exception {
+        String body = new ObjectMapper().writeValueAsString(new HashMap<>());
+
+        mockMvc.perform(patch(STADIUM + "/{id}", UUID.randomUUID()).content(body)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test

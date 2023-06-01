@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.CoachConstants.COACH;
 import static co.com.perficient.project3.utils.constant.Constants.BIRTHDATE_JSONPATH;
@@ -101,6 +102,15 @@ class CoachControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
                 .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY)).andReturn();
+    }
+
+    @Test
+    void updateCoachNotFound() throws Exception {
+        CoachDTO coachDTO = new CoachDTO("", "", LocalDate.now().minusYears(1).toString(), "");
+        String body = new ObjectMapper().writeValueAsString(coachDTO);
+
+        mockMvc.perform(put(COACH + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

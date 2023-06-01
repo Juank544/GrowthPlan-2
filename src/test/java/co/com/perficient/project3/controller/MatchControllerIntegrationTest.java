@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
@@ -93,6 +94,15 @@ class MatchControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.date").isNotEmpty())
                 .andExpect(jsonPath("$.round").value(ROUND)).andExpect(jsonPath("$.score").value(SCORE)).andReturn();
+    }
+
+    @Test
+    void updateMatchNotFound() throws Exception {
+        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", "", "", "", "");
+        String body = new ObjectMapper().writeValueAsString(matchDTO);
+
+        mockMvc.perform(put(MATCH + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
