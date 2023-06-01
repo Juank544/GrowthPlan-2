@@ -100,4 +100,11 @@ class MatchControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(delete(MATCH + "/{id}", uuidA)).andDo(print()).andExpect(status().isOk())
                 .andReturn();
     }
+
+    @Test
+    void findLast3Matches() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(MATCH + "/last")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()").value(2)).andReturn();
+    }
 }

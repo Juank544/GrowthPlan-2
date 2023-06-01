@@ -4,6 +4,7 @@ import co.com.perficient.project3.model.entity.Match;
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.MatchRepository;
+import co.com.perficient.project3.repository.custom.MatchCustomRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ class MatchServiceImplTest {
     private MatchServiceImpl matchService;
     @Mock
     private MatchRepository matchRepository;
+    @Mock
+    private MatchCustomRepository matchCustomRepository;
 
     final UUID ID_MATCH = UUID.randomUUID();
 
@@ -94,5 +97,14 @@ class MatchServiceImplTest {
     void delete() {
         matchService.delete(UUID.randomUUID());
         verify(matchRepository, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void findLast3Matches() {
+        when(matchCustomRepository.findLast3Matches()).thenReturn(Collections.nCopies(3, Match.builder().build()));
+
+        List<Match> lastMatches = matchService.findLast3Matches();
+        assertNotNull(lastMatches);
+        assertEquals(3, lastMatches.size());
     }
 }
