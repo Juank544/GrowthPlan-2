@@ -6,6 +6,7 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
@@ -33,7 +34,7 @@ public class Team {
     private UUID id;
     private String name;
     private String country;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_STADIUM_ID"))
     private Stadium stadium;
     @OneToOne(mappedBy = "team")

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static co.com.perficient.project3.utils.constant.Constants.LAST;
 import static co.com.perficient.project3.utils.constant.MatchConstants.MATCH;
 
 @RestController
@@ -65,5 +66,11 @@ public class MatchController {
     public ResponseEntity<MatchDTO> deleteMatch(@PathVariable UUID id) {
         matchService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(LAST)
+    public ResponseEntity<List<MatchDTO>> findLast3Matches() {
+        List<MatchDTO> recentMatches = matchService.findLast3Matches().stream().map(matchMapper::toDTO).toList();
+        return new ResponseEntity<>(recentMatches, HttpStatus.OK);
     }
 }

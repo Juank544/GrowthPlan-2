@@ -11,6 +11,8 @@ public final class Constants {
     public static final UUID uuidB = UUID.fromString("f09be61e-682b-46f5-8905-0cd71151063e");
 
     public static final String COUNTRY = "/country";
+    public static final String REGISTER = "/register";
+    public static final String LAST = "/last";
 
     public static final String BIRTHDATE_JSONPATH = "$.birthDate";
     public static final String COUNTRY_JSONPATH = "$.country";

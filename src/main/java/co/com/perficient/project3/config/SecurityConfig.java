@@ -30,7 +30,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST).hasRole(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.GET).authenticated()
                         .requestMatchers(HttpMethod.PUT, STADIUM + "/**", TEAM + "/**")
-                        .hasAnyRole(Roles.ADMIN.name(), Roles.PRESIDENT.name())
+                        .hasAnyRole(Roles.ADMIN.name(), Roles.PRESIDENT.name()).requestMatchers(HttpMethod.DELETE)
+                        .hasRole(Roles.ADMIN.name())
                         .anyRequest().denyAll())
                 .formLogin(Customizer.withDefaults()).httpBasic(Customizer.withDefaults());
         return http.build();

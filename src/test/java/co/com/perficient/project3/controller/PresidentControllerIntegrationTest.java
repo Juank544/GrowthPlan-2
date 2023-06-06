@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.Constants.BIRTHDATE_JSONPATH;
 import static co.com.perficient.project3.utils.constant.Constants.NAME_JSONPATH;
@@ -102,6 +103,15 @@ class PresidentControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath(NAME_JSONPATH).value(NAME))
                 .andExpect(jsonPath(NATIONALITY_JSONPATH).value(NATIONALITY)).andReturn();
+    }
+
+    @Test
+    void updatePresidentNotFound() throws Exception {
+        PresidentDTO presidentDTO = new PresidentDTO("", "", LocalDate.now().minusYears(1).toString(), "");
+        String body = new ObjectMapper().writeValueAsString(presidentDTO);
+
+        mockMvc.perform(put(PRESIDENT + "/{id}", UUID.randomUUID()).content(body)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test
