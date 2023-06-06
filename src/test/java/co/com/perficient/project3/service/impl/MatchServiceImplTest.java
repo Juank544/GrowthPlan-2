@@ -106,5 +106,6 @@ class MatchServiceImplTest {
         List<Match> lastMatches = matchService.findLast3Matches();
         assertNotNull(lastMatches);
         assertEquals(3, lastMatches.size());
+        verify(matchCustomRepository, times(1)).findLast3Matches();
     }
 }

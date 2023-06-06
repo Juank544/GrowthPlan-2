@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static co.com.perficient.project3.utils.constant.Constants.LAST;
 import static co.com.perficient.project3.utils.constant.Constants.uuidA;
 import static co.com.perficient.project3.utils.constant.Constants.uuidB;
 import static co.com.perficient.project3.utils.constant.MatchConstants.MATCH;
@@ -113,7 +114,7 @@ class MatchControllerIntegrationTest {
 
     @Test
     void findLast3Matches() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(MATCH + "/last")).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(get(MATCH + LAST)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
     }
