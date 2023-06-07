@@ -62,7 +62,7 @@ class PresidentControllerIntegrationTest {
         final String NAME = "President C";
         final String NATIONALITY = "Nationality C";
 
-        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
+        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
         String body = new ObjectMapper().writeValueAsString(presidentDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(PRESIDENT).content(body)
@@ -95,7 +95,7 @@ class PresidentControllerIntegrationTest {
         final String NAME = "President D";
         final String NATIONALITY = "Nationality D";
 
-        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
+        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
         String body = new ObjectMapper().writeValueAsString(presidentDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(PRESIDENT + "/{id}", uuidA).content(body)

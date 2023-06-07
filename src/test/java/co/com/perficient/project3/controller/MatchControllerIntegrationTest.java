@@ -2,7 +2,11 @@ package co.com.perficient.project3.controller;
 
 import co.com.perficient.project3.model.dto.MatchDTO;
 import co.com.perficient.project3.model.entity.Match;
+import co.com.perficient.project3.model.entity.Stadium;
+import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.MatchRepository;
+import co.com.perficient.project3.repository.StadiumRepository;
+import co.com.perficient.project3.repository.TeamRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,14 +48,32 @@ class MatchControllerIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private MatchRepository matchRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
+    private StadiumRepository stadiumRepository;
+
+    private final String STADIUM_NAME = "stadiumName";
+    private final String HOME_TEAM_NAME = "homeTeam";
+    private final String AWAY_TEAM_NAME = "awayTeam";
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+
+        Stadium stadiumA = Stadium.builder().name(STADIUM_NAME + "A").build();
+        Stadium stadiumB = Stadium.builder().name(STADIUM_NAME + "B").build();
+        Stadium stadiumC = Stadium.builder().name(STADIUM_NAME + "C").build();
+        stadiumRepository.saveAll(Arrays.asList(stadiumA, stadiumB, stadiumC));
+
+        Team homeTeam = Team.builder().name(HOME_TEAM_NAME).stadium(stadiumA).build();
+        Team awayTeam = Team.builder().name(AWAY_TEAM_NAME).stadium(stadiumB).build();
+        teamRepository.saveAllAndFlush(Arrays.asList(homeTeam, awayTeam));
+
         Match matchA = Match.builder().id(uuidA).date(LocalDate.now().minusYears(1)).round("Last 8").score("2-0")
-                .build();
-        Match matchB = Match.builder().id(uuidB).date(LocalDate.now().minusYears(2)).round("Final").score("0-0")
-                .build();
+                .homeTeam(homeTeam).awayTeam(awayTeam).build();
+        Match matchB = Match.builder().id(uuidB).date(LocalDate.now().minusYears(2)).stadium(stadiumB).round("Final")
+                .score("0-0").homeTeam(homeTeam).awayTeam(awayTeam).build();
         matchRepository.saveAll(Arrays.asList(matchA, matchB));
     }
 
@@ -60,7 +82,8 @@ class MatchControllerIntegrationTest {
         final String ROUND = "Last 16";
         final String SCORE = "2-0";
 
-        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", ROUND, SCORE, "", "");
+        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1)
+                .toString(), null, ROUND, SCORE, HOME_TEAM_NAME, AWAY_TEAM_NAME);
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(MATCH).content(body).contentType(MediaType.APPLICATION_JSON))
@@ -88,7 +111,8 @@ class MatchControllerIntegrationTest {
         final String ROUND = "Semifinal";
         final String SCORE = "2-1";
 
-        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", ROUND, SCORE, "", "");
+        MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1)
+                .toString(), STADIUM_NAME + "C", ROUND, SCORE, HOME_TEAM_NAME, AWAY_TEAM_NAME);
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(MATCH + "/{id}", uuidA).content(body)
