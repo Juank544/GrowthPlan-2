@@ -66,7 +66,7 @@ class StadiumControllerIntegrationTest {
         final String CITY = "City C";
         final String CAPACITY = "3";
 
-        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY);
+        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY, null);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(STADIUM).content(body)
@@ -98,7 +98,7 @@ class StadiumControllerIntegrationTest {
         final String CITY = "City D";
         final String CAPACITY = "4";
 
-        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY);
+        StadiumDTO stadiumDTO = new StadiumDTO(NAME, COUNTRY, CITY, CAPACITY, null);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(STADIUM + "/{id}", uuidA).content(body)
@@ -111,7 +111,7 @@ class StadiumControllerIntegrationTest {
 
     @Test
     void updateStadiumNotFound() throws Exception {
-        StadiumDTO stadiumDTO = new StadiumDTO("", COUNTRY, "", "");
+        StadiumDTO stadiumDTO = new StadiumDTO("", COUNTRY, "", "", null);
         String body = new ObjectMapper().writeValueAsString(stadiumDTO);
 
         mockMvc.perform(put(STADIUM + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))
