@@ -65,7 +65,7 @@ class TeamControllerIntegrationTest {
         stadiumRepository.save(Stadium.builder().name(STADIUM_NAME).country(COUNTRY).build());
         final String NAME = "Team C";
 
-        TeamDTO teamDTO = new TeamDTO(NAME, null, STADIUM_NAME, "", "");
+        TeamDTO teamDTO = new TeamDTO(NAME, null, STADIUM_NAME, "", "", null);
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(TEAM).content(body).contentType(MediaType.APPLICATION_JSON))
@@ -96,7 +96,7 @@ class TeamControllerIntegrationTest {
         stadiumRepository.save(Stadium.builder().name(STADIUM_NAME).country(COUNTRY).build());
 
         final String NAME = "Team D";
-        TeamDTO teamDTO = new TeamDTO(NAME, null, STADIUM_NAME, "", "");
+        TeamDTO teamDTO = new TeamDTO(NAME, null, STADIUM_NAME, "", "", null);
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(TEAM + "/{id}", uuidA).content(body)
@@ -110,7 +110,7 @@ class TeamControllerIntegrationTest {
 
     @Test
     void updateTeamNotFound() throws Exception {
-        TeamDTO teamDTO = new TeamDTO("", null, "", "", "");
+        TeamDTO teamDTO = new TeamDTO("", null, "", "", "", null);
         String body = new ObjectMapper().writeValueAsString(teamDTO);
 
         mockMvc.perform(put(TEAM + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))

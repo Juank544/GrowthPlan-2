@@ -19,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.TeamConstants.TEAM;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = TEAM, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,15 +45,33 @@ public class TeamController {
 
     @GetMapping
     public ResponseEntity<List<TeamDTO>> findAllTeams() {
-        List<TeamDTO> teams = teamService.findAll().stream().map(teamMapper::toDTO).toList();
+        List<TeamDTO> teams = teamService.findAll().stream()
+                .map(team -> team.add(linkTo(methodOn(TeamController.class).findTeamById(team.getId())).withSelfRel()))
+                .map(teamMapper::toDTO).toList();
         return new ResponseEntity<>(teams, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TeamDTO> findTeamById(@PathVariable UUID id) {
         Optional<Team> optionalTeam = teamService.findById(id);
-        return optionalTeam.map(team -> new ResponseEntity<>(teamMapper.toDTO(team), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (optionalTeam.isPresent()) {
+            Team team = optionalTeam.get();
+            team.add(linkTo(methodOn(TeamController.class).findAllTeams()).withRel("allTeams"));
+            if (Objects.nonNull(team.getStadium())) {
+                team.add(linkTo(methodOn(StadiumController.class).findStadiumById(team.getStadium()
+                        .getId())).withRel("stadium"));
+            }
+            if (Objects.nonNull(team.getPresident())) {
+                team.add(linkTo(methodOn(PresidentController.class).findPresidentById(team.getPresident()
+                        .getId())).withRel("president"));
+            }
+            if (Objects.nonNull(team.getCoach())) {
+                team.add(linkTo(methodOn(CoachController.class).findCoachById(team.getCoach()
+                        .getId())).withRel("coach"));
+            }
+            return new ResponseEntity<>(teamMapper.toDTO(team), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

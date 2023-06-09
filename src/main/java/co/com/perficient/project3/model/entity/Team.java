@@ -11,11 +11,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,9 +26,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@SuperBuilder
+@Builder
 @NoArgsConstructor
-public class Team {
+@AllArgsConstructor
+public class Team extends RepresentationModel<Team> {
 
     @Id
     @GeneratedValue(generator = "myGenerator")
