@@ -69,6 +69,7 @@ public class TeamController {
                 team.add(linkTo(methodOn(CoachController.class).findCoachById(team.getCoach()
                         .getId())).withRel("coach"));
             }
+            team.add(linkTo(methodOn(PlayerController.class).findAllPlayers(team.getName())).withRel("players"));
             return new ResponseEntity<>(teamMapper.toDTO(team), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
