@@ -2,6 +2,7 @@ package co.com.perficient.project3.service.impl;
 
 import co.com.perficient.project3.model.entity.Player;
 import co.com.perficient.project3.repository.PlayerRepository;
+import co.com.perficient.project3.repository.custom.PlayerCustomRepository;
 import co.com.perficient.project3.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
     private PlayerRepository playerRepository;
+    @Autowired
+    private PlayerCustomRepository playerCustomRepository;
 
     @Override
     public Player create(Player player) {
@@ -24,6 +27,11 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public List<Player> findAll() {
         return playerRepository.findAll();
+    }
+
+    @Override
+    public List<Player> findAllByTeam(String team) {
+        return playerCustomRepository.findAllByTeam(team);
     }
 
     @Override

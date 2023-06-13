@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,8 +41,11 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlayerDTO>> findAllPlayers() {
-        List<PlayerDTO> players = playerService.findAll().stream().map(playerMapper::toDTO).toList();
+    public ResponseEntity<List<PlayerDTO>> findAllPlayers(@RequestParam(required = false) String team) {
+        List<PlayerDTO> players;
+        if (Objects.isNull(team)) {
+            players = playerService.findAll().stream().map(playerMapper::toDTO).toList();
+        } else players = playerService.findAllByTeam(team).stream().map(playerMapper::toDTO).toList();
         return new ResponseEntity<>(players, HttpStatus.OK);
     }
 
