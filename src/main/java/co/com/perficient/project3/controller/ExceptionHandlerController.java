@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -35,5 +36,10 @@ public class ExceptionHandlerController {
     public ResponseEntity<String> noSuchElement(NoSuchElementException ex) {
         logger.error(ex.getMessage());
         return ResponseEntity.internalServerError().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<String> sqlException(SQLException ex) {
+        return ResponseEntity.internalServerError().body("update or delete violates foreign key constraint");
     }
 }

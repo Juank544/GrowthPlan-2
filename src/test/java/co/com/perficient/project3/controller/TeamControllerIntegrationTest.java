@@ -1,8 +1,12 @@
 package co.com.perficient.project3.controller;
 
 import co.com.perficient.project3.model.dto.TeamDTO;
+import co.com.perficient.project3.model.entity.Coach;
+import co.com.perficient.project3.model.entity.President;
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.model.entity.Team;
+import co.com.perficient.project3.repository.CoachRepository;
+import co.com.perficient.project3.repository.PresidentRepository;
 import co.com.perficient.project3.repository.StadiumRepository;
 import co.com.perficient.project3.repository.TeamRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,13 +53,28 @@ class TeamControllerIntegrationTest {
     private TeamRepository teamRepository;
     @Autowired
     private StadiumRepository stadiumRepository;
+    @Autowired
+    private PresidentRepository presidentRepository;
+    @Autowired
+    private CoachRepository coachRepository;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-        Team teamA = Team.builder().id(uuidA).name("Team A").country("Country A").build();
-        Team teamB = Team.builder().id(uuidB).name("Team B").country("Country B").build();
+
+        Stadium stadiumA = Stadium.builder().name("Stadium A").country("Country A").build();
+        Stadium stadiumB = Stadium.builder().name("Stadium B").country("Country B").build();
+        stadiumRepository.saveAll(Arrays.asList(stadiumA, stadiumB));
+
+        Team teamA = Team.builder().id(uuidA).name("Team A").country("Country A").stadium(stadiumA).build();
+        Team teamB = Team.builder().id(uuidB).name("Team B").country("Country B").stadium(stadiumB).build();
         teamRepository.saveAll(Arrays.asList(teamA, teamB));
+
+        President presidentA = President.builder().name("President A").team(teamA).build();
+        President presidentB = President.builder().name("President B").team(teamB).build();
+        presidentRepository.saveAll(Arrays.asList(presidentA, presidentB));
+
+        coachRepository.save(Coach.builder().name("Coach B").team(teamB).build());
     }
 
     @Test
@@ -86,7 +105,13 @@ class TeamControllerIntegrationTest {
     void findTeamById() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(TEAM + "/{id}", uuidB)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(NAME_JSONPATH).value("Team B")).andReturn();
+                .andExpect(jsonPath(NAME_JSONPATH).value("Team B")).andExpect(jsonPath("$.links.size()").value(5))
+                .andReturn();
+    }
+
+    @Test
+    void findTeamByIdNotFound() throws Exception {
+        mockMvc.perform(get(TEAM + "/{id}", UUID.randomUUID())).andExpect(status().isNotFound());
     }
 
     @Test

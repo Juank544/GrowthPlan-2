@@ -1,7 +1,9 @@
 package co.com.perficient.project3.service.impl;
 
 import co.com.perficient.project3.model.entity.Player;
+import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.PlayerRepository;
+import co.com.perficient.project3.repository.custom.PlayerCustomRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,6 +31,8 @@ class PlayerServiceImplTest {
     private PlayerServiceImpl playerService;
     @Mock
     private PlayerRepository playerRepository;
+    @Mock
+    private PlayerCustomRepository playerCustomRepository;
 
     final UUID ID_PLAYER = UUID.randomUUID();
 
@@ -53,6 +58,17 @@ class PlayerServiceImplTest {
 
         List<Player> players = playerService.findAll();
         Assertions.assertThat(players).isNotNull().isNotEmpty();
+    }
+
+    @Test
+    void findAllByTeam() {
+        final String TEAM_NAME = "team A";
+        when(playerCustomRepository.findAllByTeam(anyString())).thenReturn(Collections.singletonList(Player.builder()
+                .name("player A").team(Team.builder().name(TEAM_NAME).build()).build()));
+
+        List<Player> players = playerService.findAllByTeam(TEAM_NAME);
+        Assertions.assertThat(players).isNotNull().isNotEmpty();
+        assertEquals(TEAM_NAME, players.get(0).getTeam().getName());
     }
 
     @Test

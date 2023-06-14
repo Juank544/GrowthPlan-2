@@ -55,10 +55,13 @@ class PlayerControllerIntegrationTest {
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
+        Team teamB = Team.builder().name("Team B").build();
+        teamRepository.save(teamB);
+
         Player playerA = Player.builder().id(uuidA).birthDate(LocalDate.now().minusYears(1)).name("Player A")
                 .nationality("Nationality A").number("1").position("Position A").build();
         Player playerB = Player.builder().id(uuidB).birthDate(LocalDate.now().minusYears(2)).name("Player B")
-                .nationality("Nationality B").number("2").position("Position B").build();
+                .nationality("Nationality B").number("2").position("Position B").team(teamB).build();
         playerRepository.saveAll(Arrays.asList(playerA, playerB));
     }
 
@@ -87,6 +90,15 @@ class PlayerControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(get(PLAYER)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2)).andReturn();
+    }
+
+    @Test
+    void findAllPlayersByTeam() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get(PLAYER + "?team={t}", "Team B")).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$..name").value("Player B")).andExpect(jsonPath("$..number").value("2"))
+                .andExpect(jsonPath("$..position").value("Position B")).andReturn();
     }
 
     @Test

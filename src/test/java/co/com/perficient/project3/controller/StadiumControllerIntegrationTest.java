@@ -92,6 +92,11 @@ class StadiumControllerIntegrationTest {
     }
 
     @Test
+    void findStadiumByIdNotFound() throws Exception {
+        mockMvc.perform(get(STADIUM + "/{id}", UUID.randomUUID())).andExpect(status().isNotFound());
+    }
+
+    @Test
     void updateStadium() throws Exception {
         final String NAME = "Stadium D";
         final String COUNTRY = "Country D";
