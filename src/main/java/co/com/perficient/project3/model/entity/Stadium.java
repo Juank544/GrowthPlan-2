@@ -4,20 +4,23 @@ import co.com.perficient.project3.utils.UseIdOrGenerate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@SuperBuilder
+@Builder
 @NoArgsConstructor
-public class Stadium {
+@AllArgsConstructor
+public class Stadium extends RepresentationModel<Stadium> {
 
     @Id
     @GeneratedValue(generator = "myGenerator")

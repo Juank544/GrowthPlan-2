@@ -62,7 +62,7 @@ class CoachControllerIntegrationTest {
         final String NAME = "Coach C";
         final String NATIONALITY = "Nationality C";
 
-        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
+        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
         String body = new ObjectMapper().writeValueAsString(coachDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(COACH).content(body)
@@ -94,7 +94,7 @@ class CoachControllerIntegrationTest {
         final String NAME = "Coach D";
         final String NATIONALITY = "Nationality D";
 
-        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), "");
+        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
         String body = new ObjectMapper().writeValueAsString(coachDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(COACH + "/{id}", uuidA).content(body)

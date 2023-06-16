@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.mapstruct:mapstruct:1.5.4.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
@@ -53,7 +54,8 @@ tasks.named('test') {
 
 compileJava {
 	options.compilerArgs += [
-			'-Amapstruct.defaultComponentModel=spring',
-			'-Amapstruct.suppressGeneratorTimestamp=true',
-	]
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.unmappedTargetPolicy=IGNORE',
+    ]
 }

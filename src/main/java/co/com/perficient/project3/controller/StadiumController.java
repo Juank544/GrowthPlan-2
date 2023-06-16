@@ -25,6 +25,8 @@ import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.Constants.COUNTRY;
 import static co.com.perficient.project3.utils.constant.StadiumConstants.STADIUM;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = STADIUM, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,15 +45,21 @@ public class StadiumController {
 
     @GetMapping
     public ResponseEntity<List<StadiumDTO>> findAllStadiums() {
-        List<StadiumDTO> stadiums = stadiumService.findAll().stream().map(stadiumMapper::toDTO).toList();
+        List<StadiumDTO> stadiums = stadiumService.findAll().stream()
+                .map(stadium -> stadium.add(linkTo(methodOn(StadiumController.class).findStadiumById(stadium.getId())).withSelfRel()))
+                .map(stadiumMapper::toDTO).toList();
         return new ResponseEntity<>(stadiums, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StadiumDTO> findStadiumById(@PathVariable UUID id) {
         Optional<Stadium> optionalStadium = stadiumService.findById(id);
-        return optionalStadium.map(stadium -> new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (optionalStadium.isPresent()) {
+            Stadium stadium = optionalStadium.get();
+            stadium.add(linkTo(methodOn(StadiumController.class).findAllStadiums()).withRel("allStadiums"));
+            return new ResponseEntity<>(stadiumMapper.toDTO(stadium), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -7,9 +7,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,14 +34,16 @@ public class Match {
     private UUID id;
     @Past
     private LocalDate date;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_STADIUM_ID"))
     private Stadium stadium;
     private String round;
     private String score;
+    @NotNull
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_HOME_TEAM_ID"))
     private Team homeTeam;
+    @NotNull
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AWAY_TEAM_ID"))
     private Team awayTeam;

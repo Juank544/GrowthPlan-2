@@ -2,18 +2,21 @@ package co.com.perficient.project3.mapper;
 
 import co.com.perficient.project3.model.dto.TeamDTO;
 import co.com.perficient.project3.model.entity.Team;
-import co.com.perficient.project3.service.StadiumService;
+import co.com.perficient.project3.service.TeamService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper
+import java.util.NoSuchElementException;
+
+@Mapper(uses = StadiumMapper.class)
 public abstract class TeamMapper {
 
     @Autowired
-    protected StadiumService stadiumService;
+    protected TeamService teamService;
 
-    @Mapping(target = "stadium", expression = "java(stadiumService.findByName(teamDTO.stadium()).orElse(null))")
+    @Mapping(target = "stadium", source = "teamDTO.stadium", qualifiedByName = "settingStadium", conditionExpression = "java(java.util.Objects.nonNull(teamDTO.stadium()))")
     @Mapping(target = "country", ignore = true)
     @Mapping(target = "president", ignore = true)
     @Mapping(target = "coach", ignore = true)
@@ -23,4 +26,10 @@ public abstract class TeamMapper {
     @Mapping(target = "president", source = "team.president.name")
     @Mapping(target = "coach", source = "team.coach.name")
     public abstract TeamDTO toDTO(Team team);
+
+    @Named("settingTeam")
+    protected Team settingTeam(String teamName) {
+        return teamService.findByName(teamName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("No value present for team: %s", teamName)));
+    }
 }
