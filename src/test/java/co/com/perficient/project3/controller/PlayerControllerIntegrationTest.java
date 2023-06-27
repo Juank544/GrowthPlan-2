@@ -73,7 +73,7 @@ class PlayerControllerIntegrationTest {
         final String POSITION = "Striker";
 
         PlayerDTO playerDTO = new PlayerDTO(NAME, NATIONALITY, LocalDate.now().minusYears(5)
-                .toString(), NUMBER, POSITION, null);
+                .toString(), NUMBER, POSITION, null, null);
         String body = new ObjectMapper().writeValueAsString(playerDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(PLAYER).content(body).contentType(MediaType.APPLICATION_JSON))
@@ -112,6 +112,11 @@ class PlayerControllerIntegrationTest {
     }
 
     @Test
+    void findPlayerByIdNotFound() throws Exception {
+        mockMvc.perform(get(PLAYER + "/{id}", UUID.randomUUID())).andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
     void updatePlayer() throws Exception {
         final String TEAM_NAME = "teamName";
         Team team = Team.builder().name(TEAM_NAME).build();
@@ -123,7 +128,7 @@ class PlayerControllerIntegrationTest {
         final String POSITION = "Goalkeeper";
 
         PlayerDTO playerDTO = new PlayerDTO(NAME, NATIONALITY, LocalDate.now().minusYears(4)
-                .toString(), NUMBER, POSITION, TEAM_NAME);
+                .toString(), NUMBER, POSITION, TEAM_NAME, null);
         String body = new ObjectMapper().writeValueAsString(playerDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(PLAYER + "/{id}", uuidA).content(body)
@@ -138,7 +143,7 @@ class PlayerControllerIntegrationTest {
     @Test
     void updatePlayerNotFound() throws Exception {
         PlayerDTO playerDTO = new PlayerDTO("", "", LocalDate.now().minusYears(4)
-                .toString(), "", "", "");
+                .toString(), "", "", "", null);
         String body = new ObjectMapper().writeValueAsString(playerDTO);
 
         mockMvc.perform(put(PLAYER + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))

@@ -62,7 +62,7 @@ class CoachControllerIntegrationTest {
         final String NAME = "Coach C";
         final String NATIONALITY = "Nationality C";
 
-        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
+        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null, null);
         String body = new ObjectMapper().writeValueAsString(coachDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(COACH).content(body)
@@ -90,11 +90,16 @@ class CoachControllerIntegrationTest {
     }
 
     @Test
+    void findCoachByIdNotFound() throws Exception {
+        mockMvc.perform(get(COACH + "/{id}", UUID.randomUUID())).andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
     void updateCoach() throws Exception {
         final String NAME = "Coach D";
         final String NATIONALITY = "Nationality D";
 
-        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
+        CoachDTO coachDTO = new CoachDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null, null);
         String body = new ObjectMapper().writeValueAsString(coachDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(COACH + "/{id}", uuidA).content(body)
@@ -106,7 +111,7 @@ class CoachControllerIntegrationTest {
 
     @Test
     void updateCoachNotFound() throws Exception {
-        CoachDTO coachDTO = new CoachDTO("", "", LocalDate.now().minusYears(1).toString(), "");
+        CoachDTO coachDTO = new CoachDTO("", "", LocalDate.now().minusYears(1).toString(), "", null);
         String body = new ObjectMapper().writeValueAsString(coachDTO);
 
         mockMvc.perform(put(COACH + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))

@@ -62,7 +62,8 @@ class PresidentControllerIntegrationTest {
         final String NAME = "President C";
         final String NATIONALITY = "Nationality C";
 
-        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
+        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1)
+                .toString(), null, null);
         String body = new ObjectMapper().writeValueAsString(presidentDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(PRESIDENT).content(body)
@@ -91,11 +92,17 @@ class PresidentControllerIntegrationTest {
     }
 
     @Test
+    void findPresidentByIdNotFound() throws Exception {
+        mockMvc.perform(get(PRESIDENT + "/{id}", UUID.randomUUID())).andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
     void updatePresident() throws Exception {
         final String NAME = "President D";
         final String NATIONALITY = "Nationality D";
 
-        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1).toString(), null);
+        PresidentDTO presidentDTO = new PresidentDTO(NAME, NATIONALITY, LocalDate.now().minusYears(1)
+                .toString(), null, null);
         String body = new ObjectMapper().writeValueAsString(presidentDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(PRESIDENT + "/{id}", uuidA).content(body)
@@ -107,7 +114,7 @@ class PresidentControllerIntegrationTest {
 
     @Test
     void updatePresidentNotFound() throws Exception {
-        PresidentDTO presidentDTO = new PresidentDTO("", "", LocalDate.now().minusYears(1).toString(), "");
+        PresidentDTO presidentDTO = new PresidentDTO("", "", LocalDate.now().minusYears(1).toString(), "", null);
         String body = new ObjectMapper().writeValueAsString(presidentDTO);
 
         mockMvc.perform(put(PRESIDENT + "/{id}", UUID.randomUUID()).content(body)
