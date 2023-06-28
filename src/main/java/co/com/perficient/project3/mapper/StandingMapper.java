@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 public interface StandingMapper {
 
     @Mapping(target = "team", source = "team", qualifiedByName = "settingTeam", conditionExpression = "java(java.util.Objects.nonNull(standingDTO.team()))")
+    @Mapping(target = "matchesPlayed", ignore = true)
+    @Mapping(target = "points", ignore = true)
     Standing toEntity(StandingDTO standingDTO);
 
     @Mapping(target = "team", source = "team.name")

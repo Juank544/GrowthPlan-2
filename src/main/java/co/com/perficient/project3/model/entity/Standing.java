@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,4 +38,14 @@ public class Standing {
     private Integer draws;
     private Integer losses;
     private Integer points;
+
+    @PrePersist
+    @PreUpdate
+    private void setData() {
+        points = 0;
+        points += wins * 3;
+        points += draws;
+
+        matchesPlayed = wins + draws + losses;
+    }
 }

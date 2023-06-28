@@ -34,11 +34,9 @@ public class StandingServiceImpl implements StandingService {
     @Override
     public Standing update(Standing oldStanding, Standing newStanding) {
         oldStanding.setTeam(newStanding.getTeam());
-        oldStanding.setMatchesPlayed(newStanding.getMatchesPlayed());
         oldStanding.setWins(newStanding.getWins());
         oldStanding.setDraws(newStanding.getDraws());
         oldStanding.setLosses(newStanding.getLosses());
-        oldStanding.setPoints(newStanding.getPoints());
         return standingRepository.saveAndFlush(oldStanding);
     }
 
