@@ -1,6 +1,7 @@
 package co.com.perficient.project3.service.impl;
 
 import co.com.perficient.project3.model.entity.Standing;
+import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.StandingRepository;
 import co.com.perficient.project3.service.StandingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,10 @@ public class StandingServiceImpl implements StandingService {
     @Override
     public void delete(UUID id) {
         standingRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Standing> findByTeam(Team team) {
+        return standingRepository.findByTeam(team);
     }
 }
