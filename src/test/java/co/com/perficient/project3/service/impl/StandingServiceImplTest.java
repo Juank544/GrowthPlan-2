@@ -1,6 +1,7 @@
 package co.com.perficient.project3.service.impl;
 
 import co.com.perficient.project3.model.entity.Standing;
+import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.StandingRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,5 +88,18 @@ class StandingServiceImplTest {
     void delete() {
         standingService.delete(UUID.randomUUID());
         verify(standingRepository, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void findByTeam() {
+        Team team = Team.builder().name("teamA").build();
+        Standing standing = Standing.builder().team(team).build();
+
+        when(standingRepository.findByTeam(any(Team.class))).thenReturn(Optional.of(standing));
+
+        Optional<Standing> optionalStanding = standingService.findByTeam(team);
+        assertNotNull(optionalStanding);
+        assertEquals(standing, optionalStanding.get());
+        assertEquals(team, optionalStanding.get().getTeam());
     }
 }
