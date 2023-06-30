@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,6 +24,7 @@ public class UserP3 {
     @GeneratedValue(generator = "myGenerator")
     @GenericGenerator(name = "myGenerator", type = UseIdOrGenerate.class)
     private UUID id;
+    @NotBlank
     private String username;
     @Email
     private String email;
