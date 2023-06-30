@@ -10,20 +10,23 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@SuperBuilder
+@Builder
 @NoArgsConstructor
-public class Standing {
+@AllArgsConstructor
+public class Standing extends RepresentationModel<Standing> {
 
     @Id
     @GeneratedValue(generator = "myGenerator")

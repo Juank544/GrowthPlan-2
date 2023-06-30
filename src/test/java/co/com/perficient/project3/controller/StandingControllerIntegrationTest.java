@@ -74,7 +74,7 @@ class StandingControllerIntegrationTest {
         final Integer DRAWS = 5;
         final Integer LOSSES = 6;
 
-        StandingDTO standingDTO = new StandingDTO(TEAM_NAME, null, WINS, DRAWS, LOSSES, null);
+        StandingDTO standingDTO = new StandingDTO(TEAM_NAME, null, WINS, DRAWS, LOSSES, null, null);
         String body = new ObjectMapper().writeValueAsString(standingDTO);
 
         MvcResult mvcResult = mockMvc.perform(post(STANDING).content(body).contentType(MediaType.APPLICATION_JSON))
@@ -107,7 +107,7 @@ class StandingControllerIntegrationTest {
         final Integer DRAWS = 4;
         final Integer LOSSES = 2;
 
-        StandingDTO standingDTO = new StandingDTO(TEAM_NAME, null, WINS, DRAWS, LOSSES, null);
+        StandingDTO standingDTO = new StandingDTO(TEAM_NAME, null, WINS, DRAWS, LOSSES, null, null);
         String body = new ObjectMapper().writeValueAsString(standingDTO);
 
         MvcResult mvcResult = mockMvc.perform(put(STANDING + "/{id}", uuidA).content(body)
@@ -120,7 +120,7 @@ class StandingControllerIntegrationTest {
 
     @Test
     void updateStandingNotFound() throws Exception {
-        StandingDTO standingDTO = new StandingDTO(TEAM_NAME, null, 3, 3, 3, null);
+        StandingDTO standingDTO = new StandingDTO(TEAM_NAME, null, 3, 3, 3, null, null);
         String body = new ObjectMapper().writeValueAsString(standingDTO);
 
         mockMvc.perform(put(STANDING + "/{id}", UUID.randomUUID()).content(body)

@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static co.com.perficient.project3.utils.constant.StandingConstants.STANDING;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = STANDING, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,15 +42,21 @@ public class StandingController {
 
     @GetMapping
     public ResponseEntity<List<StandingDTO>> findAllStandings() {
-        List<StandingDTO> standings = standingService.findAll().stream().map(standingMapper::toDTO).toList();
+        List<StandingDTO> standings = standingService.findAll().stream()
+                .map(standing -> standing.add(linkTo(methodOn(StandingController.class).findStandingById(standing.getId())).withSelfRel()))
+                .map(standingMapper::toDTO).toList();
         return new ResponseEntity<>(standings, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StandingDTO> findStandingById(@PathVariable UUID id) {
         Optional<Standing> optionalStanding = standingService.findById(id);
-        return optionalStanding.map(standing -> new ResponseEntity<>(standingMapper.toDTO(standing), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (optionalStanding.isPresent()) {
+            Standing standing = optionalStanding.get();
+            standing.add(linkTo(methodOn(StandingController.class).findAllStandings()).withRel("allStandings"));
+            return new ResponseEntity<>(standingMapper.toDTO(standing), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
