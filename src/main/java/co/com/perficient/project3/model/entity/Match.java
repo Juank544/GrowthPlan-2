@@ -11,6 +11,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,6 +39,8 @@ public class Match {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_STADIUM_ID"))
     private Stadium stadium;
     private String round;
+    @NotNull
+    @Pattern(regexp = "^\\d-\\d$", message = "must match [0-9]-[0-9]")
     private String score;
     @NotNull
     @ManyToOne

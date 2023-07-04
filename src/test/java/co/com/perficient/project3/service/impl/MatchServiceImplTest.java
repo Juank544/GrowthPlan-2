@@ -5,6 +5,7 @@ import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.MatchRepository;
 import co.com.perficient.project3.repository.custom.MatchCustomRepository;
+import co.com.perficient.project3.service.StandingService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,8 @@ class MatchServiceImplTest {
     private MatchRepository matchRepository;
     @Mock
     private MatchCustomRepository matchCustomRepository;
+    @Mock
+    private StandingService standingService;
 
     final UUID ID_MATCH = UUID.randomUUID();
 
@@ -43,7 +46,7 @@ class MatchServiceImplTest {
 
     @Test
     void create() {
-        Match match = Match.builder().id(ID_MATCH).build();
+        Match match = Match.builder().id(ID_MATCH).score("0-0").build();
 
         when(matchRepository.save(any(Match.class))).thenReturn(match);
 
@@ -76,9 +79,8 @@ class MatchServiceImplTest {
     void update() {
         Match oldMatch = Match.builder().build();
         final String ROUND = "lAST 16";
-        final String SCORE = "1-0";
         Match newMatch = Match.builder().date(LocalDate.now()).stadium(Stadium.builder().build()).round(ROUND)
-                .score(SCORE).homeTeam(Team.builder().name("homeTeam").build())
+                .score("1-0").homeTeam(Team.builder().name("homeTeam").build())
                 .awayTeam(Team.builder().name("awayTeam").build()).build();
 
         when(matchRepository.saveAndFlush(any(Match.class))).thenReturn(oldMatch);
@@ -88,9 +90,14 @@ class MatchServiceImplTest {
         assertNotNull(matchUpdated.getDate());
         assertNotNull(matchUpdated.getStadium());
         assertEquals(ROUND, matchUpdated.getRound());
-        assertEquals(SCORE, matchUpdated.getScore());
+        assertEquals("1-0", matchUpdated.getScore());
         assertEquals("homeTeam", matchUpdated.getHomeTeam().getName());
         assertEquals("awayTeam", matchUpdated.getAwayTeam().getName());
+
+        matchUpdated.setScore("0-1");
+        Match matchUpdatedB = matchService.update(oldMatch, matchUpdated);
+        assertNotNull(matchUpdatedB);
+        assertEquals("0-1", matchUpdatedB.getScore());
     }
 
     @Test

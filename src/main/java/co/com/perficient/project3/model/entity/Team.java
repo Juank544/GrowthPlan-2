@@ -19,8 +19,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.hateoas.RepresentationModel;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -45,7 +45,7 @@ public class Team extends RepresentationModel<Team> {
     @OneToOne(mappedBy = "team")
     private Coach coach;
     @OneToMany(mappedBy = "team")
-    private List<Player> players;
+    private Set<Player> players;
 
     @PrePersist
     @PreUpdate
