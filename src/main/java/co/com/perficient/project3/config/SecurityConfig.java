@@ -37,8 +37,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST).hasRole(Roles.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET).authenticated()
-                        .requestMatchers(HttpMethod.PUT, STADIUM + "/**", TEAM + "/**")
+                        .requestMatchers(HttpMethod.GET).authenticated().requestMatchers(HttpMethod.PUT)
+                        .hasRole(Roles.ADMIN.name()).requestMatchers(HttpMethod.PUT, STADIUM + "/**", TEAM + "/**")
                         .hasAnyRole(Roles.ADMIN.name(), Roles.PRESIDENT.name()).requestMatchers(HttpMethod.DELETE)
                         .hasRole(Roles.ADMIN.name())
                         .anyRequest().denyAll())
