@@ -44,4 +44,10 @@ public class ExceptionHandlerController {
         logger.error(message);
         return ResponseEntity.internalServerError().body(message);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> illegalArgument(IllegalArgumentException ex) {
+        logger.error(ex.getMessage());
+        return ResponseEntity.internalServerError().body(ex.getMessage());
+    }
 }

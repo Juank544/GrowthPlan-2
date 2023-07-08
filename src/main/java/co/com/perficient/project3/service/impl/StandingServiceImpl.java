@@ -19,7 +19,10 @@ public class StandingServiceImpl implements StandingService {
 
     @Override
     public Standing create(Standing standing) {
-        return standingRepository.save(standing);
+        if (!standing.getTeam().getStandings().contains(standing) || !standing.getCompetition().getStandings()
+                .contains(standing)) {
+            return standingRepository.save(standing);
+        } else throw new IllegalArgumentException("The standing already exists");
     }
 
     @Override
@@ -34,11 +37,15 @@ public class StandingServiceImpl implements StandingService {
 
     @Override
     public Standing update(Standing oldStanding, Standing newStanding) {
-        oldStanding.setTeam(newStanding.getTeam());
-        oldStanding.setWins(newStanding.getWins());
-        oldStanding.setDraws(newStanding.getDraws());
-        oldStanding.setLosses(newStanding.getLosses());
-        return standingRepository.saveAndFlush(oldStanding);
+        if (!newStanding.getTeam().getStandings().contains(newStanding) || !newStanding.getCompetition().getStandings()
+                .contains(newStanding)) {
+            oldStanding.setWins(newStanding.getWins());
+            oldStanding.setDraws(newStanding.getDraws());
+            oldStanding.setLosses(newStanding.getLosses());
+            oldStanding.setCompetition(newStanding.getCompetition());
+            oldStanding.setTeam(newStanding.getTeam());
+            return standingRepository.saveAndFlush(oldStanding);
+        } else throw new IllegalArgumentException("The standing already exists");
     }
 
     @Override
