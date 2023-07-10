@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,9 +37,11 @@ public class Standing extends RepresentationModel<Standing> {
     private Integer draws;
     private Integer losses;
     private Integer points;
+    @NotNull
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_COMPETITION_ID"))
     private Competition competition;
+    @NotNull
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_TEAM_ID"))
     private Team team;
