@@ -1,5 +1,6 @@
 package co.com.perficient.project3.repository;
 
+import co.com.perficient.project3.model.entity.Competition;
 import co.com.perficient.project3.model.entity.Standing;
 import co.com.perficient.project3.model.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface StandingRepository extends JpaRepository<Standing, UUID> {
-    Optional<Standing> findByTeam(Team team);
+    Optional<Standing> findByCompetitionAndTeam(Competition competition, Team team);
 }

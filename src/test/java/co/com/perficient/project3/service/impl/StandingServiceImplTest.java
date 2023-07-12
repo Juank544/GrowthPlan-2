@@ -57,6 +57,9 @@ public class StandingServiceImplTest {
         standing.setCompetition(Competition.builder().standings(Set.of(standing)).build());
         standing.setTeam(Team.builder().standings(Set.of(standing)).build());
 
+        when(standingService.findByCompetitionAndTeam(any(Competition.class), any(Team.class))).thenReturn(Optional.of(Standing.builder()
+                .build()));
+
         standingService.create(standing);
     }
 
@@ -100,13 +103,16 @@ public class StandingServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void updateException() {
-        Standing oldStanding = Standing.builder().build();
+        Standing oldStanding = Standing.builder().id(UUID.randomUUID()).build();
         final Integer WINS = 4;
         final Integer DRAWS = 5;
         final Integer LOSSES = 6;
         Standing newStanding = Standing.builder().wins(WINS).draws(DRAWS).losses(LOSSES).build();
         newStanding.setCompetition(Competition.builder().standings(Set.of(newStanding)).build());
         newStanding.setTeam(Team.builder().standings(Set.of(newStanding)).build());
+
+        when(standingService.findByCompetitionAndTeam(any(Competition.class), any(Team.class))).thenReturn(Optional.of(Standing.builder()
+                .id(UUID.randomUUID()).build()));
 
         standingService.update(oldStanding, newStanding);
     }
@@ -118,15 +124,17 @@ public class StandingServiceImplTest {
     }
 
     @Test
-    public void findByTeam() {
+    public void findByCompetitionAndTeam() {
+        Competition competition = Competition.builder().name("competitionA").build();
         Team team = Team.builder().name("teamA").build();
-        Standing standing = Standing.builder().team(team).build();
+        Standing standing = Standing.builder().competition(competition).team(team).build();
 
-        when(standingRepository.findByTeam(any(Team.class))).thenReturn(Optional.of(standing));
+        when(standingRepository.findByCompetitionAndTeam(any(Competition.class), any(Team.class))).thenReturn(Optional.of(standing));
 
-        Optional<Standing> optionalStanding = standingService.findByTeam(team);
+        Optional<Standing> optionalStanding = standingService.findByCompetitionAndTeam(competition, team);
         assertNotNull(optionalStanding);
         assertEquals(standing, optionalStanding.get());
+        assertEquals(competition, optionalStanding.get().getCompetition());
         assertEquals(team, optionalStanding.get().getTeam());
     }
 }
