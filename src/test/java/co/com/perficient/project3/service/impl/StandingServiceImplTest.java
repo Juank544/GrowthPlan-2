@@ -5,8 +5,8 @@ import co.com.perficient.project3.model.entity.Standing;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.StandingRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -19,13 +19,14 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-public class StandingServiceImplTest {
+class StandingServiceImplTest {
 
     @InjectMocks
     private StandingServiceImpl standingService;
@@ -34,13 +35,13 @@ public class StandingServiceImplTest {
 
     final UUID ID_STANDING = UUID.randomUUID();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks(this);
     }
 
     @Test
-    public void create() {
+    void create() {
         Standing standing = Standing.builder().id(ID_STANDING).team(Team.builder().standings(new HashSet<>()).build())
                 .build();
 
@@ -51,8 +52,8 @@ public class StandingServiceImplTest {
         assertEquals(ID_STANDING, standingCreated.getId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createException() {
+    @Test
+    void createException() {
         Standing standing = Standing.builder().id(ID_STANDING).build();
         standing.setCompetition(Competition.builder().standings(Set.of(standing)).build());
         standing.setTeam(Team.builder().standings(Set.of(standing)).build());
@@ -60,11 +61,11 @@ public class StandingServiceImplTest {
         when(standingService.findByCompetitionAndTeam(any(Competition.class), any(Team.class))).thenReturn(Optional.of(Standing.builder()
                 .build()));
 
-        standingService.create(standing);
+        assertThrows(IllegalArgumentException.class, () -> standingService.create(standing));
     }
 
     @Test
-    public void findAll() {
+    void findAll() {
         when(standingRepository.findAll()).thenReturn(Collections.singletonList(Standing.builder().build()));
 
         List<Standing> standings = standingService.findAll();
@@ -72,7 +73,7 @@ public class StandingServiceImplTest {
     }
 
     @Test
-    public void findById() {
+    void findById() {
         Standing standing = Standing.builder().id(ID_STANDING).build();
 
         when(standingRepository.findById(any(UUID.class))).thenReturn(Optional.of(standing));
@@ -84,7 +85,7 @@ public class StandingServiceImplTest {
     }
 
     @Test
-    public void update() {
+    void update() {
         Standing oldStanding = Standing.builder().build();
         final Integer WINS = 4;
         final Integer DRAWS = 5;
@@ -101,8 +102,8 @@ public class StandingServiceImplTest {
         assertEquals(LOSSES, standingUpdated.getLosses());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateException() {
+    @Test
+    void updateException() {
         Standing oldStanding = Standing.builder().id(UUID.randomUUID()).build();
         final Integer WINS = 4;
         final Integer DRAWS = 5;
@@ -114,17 +115,17 @@ public class StandingServiceImplTest {
         when(standingService.findByCompetitionAndTeam(any(Competition.class), any(Team.class))).thenReturn(Optional.of(Standing.builder()
                 .id(UUID.randomUUID()).build()));
 
-        standingService.update(oldStanding, newStanding);
+        assertThrows(IllegalArgumentException.class, () -> standingService.update(oldStanding, newStanding));
     }
 
     @Test
-    public void delete() {
+    void delete() {
         standingService.delete(UUID.randomUUID());
         verify(standingRepository, times(1)).deleteById(any(UUID.class));
     }
 
     @Test
-    public void findByCompetitionAndTeam() {
+    void findByCompetitionAndTeam() {
         Competition competition = Competition.builder().name("competitionA").build();
         Team team = Team.builder().name("teamA").build();
         Standing standing = Standing.builder().competition(competition).team(team).build();
