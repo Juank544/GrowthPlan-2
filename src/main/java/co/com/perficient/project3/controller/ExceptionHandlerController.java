@@ -40,6 +40,14 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<String> sqlException(SQLException ex) {
-        return ResponseEntity.internalServerError().body("update or delete violates foreign key constraint");
+        String message = ex.getMessage().substring(ex.getMessage().indexOf("Detail"));
+        logger.error(message);
+        return ResponseEntity.internalServerError().body(message);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> illegalArgument(IllegalArgumentException ex) {
+        logger.error(ex.getMessage());
+        return ResponseEntity.internalServerError().body(ex.getMessage());
     }
 }

@@ -1,5 +1,6 @@
 package co.com.perficient.project3.service.impl;
 
+import co.com.perficient.project3.model.entity.Competition;
 import co.com.perficient.project3.model.entity.Standing;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.StandingRepository;
@@ -19,7 +20,9 @@ public class StandingServiceImpl implements StandingService {
 
     @Override
     public Standing create(Standing standing) {
-        return standingRepository.save(standing);
+        if (findByCompetitionAndTeam(standing.getCompetition(), standing.getTeam()).isEmpty()) {
+            return standingRepository.save(standing);
+        } else throw new IllegalArgumentException("The standing already exists");
     }
 
     @Override
@@ -34,11 +37,17 @@ public class StandingServiceImpl implements StandingService {
 
     @Override
     public Standing update(Standing oldStanding, Standing newStanding) {
-        oldStanding.setTeam(newStanding.getTeam());
-        oldStanding.setWins(newStanding.getWins());
-        oldStanding.setDraws(newStanding.getDraws());
-        oldStanding.setLosses(newStanding.getLosses());
-        return standingRepository.saveAndFlush(oldStanding);
+        Optional<Standing> optionalStanding = findByCompetitionAndTeam(newStanding.getCompetition(), newStanding.getTeam());
+        if (optionalStanding.isPresent() && !oldStanding.getId().equals(optionalStanding.get().getId())) {
+            throw new IllegalArgumentException("The standing already exists");
+        } else {
+            oldStanding.setWins(newStanding.getWins());
+            oldStanding.setDraws(newStanding.getDraws());
+            oldStanding.setLosses(newStanding.getLosses());
+            oldStanding.setCompetition(newStanding.getCompetition());
+            oldStanding.setTeam(newStanding.getTeam());
+            return standingRepository.saveAndFlush(oldStanding);
+        }
     }
 
     @Override
@@ -47,7 +56,7 @@ public class StandingServiceImpl implements StandingService {
     }
 
     @Override
-    public Optional<Standing> findByTeam(Team team) {
-        return standingRepository.findByTeam(team);
+    public Optional<Standing> findByCompetitionAndTeam(Competition competition, Team team) {
+        return standingRepository.findByCompetitionAndTeam(competition, team);
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -34,8 +35,8 @@ public class MatchController {
     private MatchMapper matchMapper;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MatchDTO> createMatch(@RequestBody MatchDTO matchDTO) {
-        Match match = matchService.create(matchMapper.toEntity(matchDTO));
+    public ResponseEntity<MatchDTO> createMatch(@RequestBody MatchDTO matchDTO, @RequestParam String competitionName) {
+        Match match = matchService.create(matchMapper.toEntity(matchDTO), competitionName);
         return new ResponseEntity<>(matchMapper.toDTO(match), HttpStatus.CREATED);
     }
 
@@ -53,10 +54,10 @@ public class MatchController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MatchDTO> updateMatch(@PathVariable UUID id, @RequestBody MatchDTO matchDTO) {
+    public ResponseEntity<MatchDTO> updateMatch(@PathVariable UUID id, @RequestBody MatchDTO matchDTO, @RequestParam String competitionName) {
         Optional<Match> optionalMatch = matchService.findById(id);
         if (optionalMatch.isPresent()) {
-            Match match = matchService.update(optionalMatch.get(), matchMapper.toEntity(matchDTO));
+            Match match = matchService.update(optionalMatch.get(), matchMapper.toEntity(matchDTO), competitionName);
             return new ResponseEntity<>(matchMapper.toDTO(match), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

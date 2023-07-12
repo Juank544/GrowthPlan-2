@@ -46,6 +46,8 @@ public class Team extends RepresentationModel<Team> {
     private Coach coach;
     @OneToMany(mappedBy = "team")
     private Set<Player> players;
+    @OneToMany(mappedBy = "team")
+    private Set<Standing> standings;
 
     @PrePersist
     @PreUpdate

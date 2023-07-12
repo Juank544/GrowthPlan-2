@@ -1,16 +1,20 @@
 package co.com.perficient.project3.service.impl;
 
+import co.com.perficient.project3.model.entity.Competition;
 import co.com.perficient.project3.model.entity.Match;
 import co.com.perficient.project3.model.entity.Stadium;
+import co.com.perficient.project3.model.entity.Standing;
 import co.com.perficient.project3.model.entity.Team;
 import co.com.perficient.project3.repository.MatchRepository;
 import co.com.perficient.project3.repository.custom.MatchCustomRepository;
+import co.com.perficient.project3.service.CompetitionService;
 import co.com.perficient.project3.service.StandingService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -20,7 +24,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,6 +42,8 @@ class MatchServiceImplTest {
     private MatchCustomRepository matchCustomRepository;
     @Mock
     private StandingService standingService;
+    @Mock
+    private CompetitionService competitionService;
 
     final UUID ID_MATCH = UUID.randomUUID();
 
@@ -46,13 +54,27 @@ class MatchServiceImplTest {
 
     @Test
     void create() {
-        Match match = Match.builder().id(ID_MATCH).score("0-0").build();
+        final String COMPETITION_NAME = "ABC";
+        Match match = Match.builder().id(ID_MATCH).score("0-0").homeTeam(Team.builder().id(UUID.randomUUID()).build())
+                .awayTeam(Team.builder().id(UUID.randomUUID()).build()).build();
+        Competition competition = Competition.builder().name(COMPETITION_NAME).build();
 
         when(matchRepository.save(any(Match.class))).thenReturn(match);
+        when(competitionService.findByName(anyString())).thenReturn(Optional.of(competition));
 
-        Match matchCreated = matchService.create(match);
+        Match matchCreated = matchService.create(match, COMPETITION_NAME);
         assertNotNull(matchCreated);
         assertEquals(ID_MATCH, matchCreated.getId());
+    }
+
+    @Test
+    void createException() {
+        final UUID ID = UUID.randomUUID();
+        final String COMPETITION_NAME = "ABC";
+        Match match = Match.builder().id(ID_MATCH).score("0-0").homeTeam(Team.builder().id(ID).build())
+                .awayTeam(Team.builder().id(ID).build()).build();
+
+        assertThrows(IllegalArgumentException.class, () -> matchService.create(match, COMPETITION_NAME));
     }
 
     @Test
@@ -77,15 +99,18 @@ class MatchServiceImplTest {
 
     @Test
     void update() {
+        final String COMPETITION_NAME = "ABC";
+        Competition competition = Competition.builder().name(COMPETITION_NAME).build();
         Match oldMatch = Match.builder().build();
         final String ROUND = "lAST 16";
         Match newMatch = Match.builder().date(LocalDate.now()).stadium(Stadium.builder().build()).round(ROUND)
-                .score("1-0").homeTeam(Team.builder().name("homeTeam").build())
-                .awayTeam(Team.builder().name("awayTeam").build()).build();
+                .score("1-0").homeTeam(Team.builder().id(UUID.randomUUID()).name("homeTeam").build())
+                .awayTeam(Team.builder().id(UUID.randomUUID()).name("awayTeam").build()).build();
 
         when(matchRepository.saveAndFlush(any(Match.class))).thenReturn(oldMatch);
+        when(competitionService.findByName(anyString())).thenReturn(Optional.of(competition));
 
-        Match matchUpdated = matchService.update(oldMatch, newMatch);
+        Match matchUpdated = matchService.update(oldMatch, newMatch, COMPETITION_NAME);
         assertNotNull(matchUpdated);
         assertNotNull(matchUpdated.getDate());
         assertNotNull(matchUpdated.getStadium());
@@ -95,9 +120,22 @@ class MatchServiceImplTest {
         assertEquals("awayTeam", matchUpdated.getAwayTeam().getName());
 
         matchUpdated.setScore("0-1");
-        Match matchUpdatedB = matchService.update(oldMatch, matchUpdated);
+        Match matchUpdatedB = matchService.update(oldMatch, matchUpdated, COMPETITION_NAME);
         assertNotNull(matchUpdatedB);
         assertEquals("0-1", matchUpdatedB.getScore());
+    }
+
+    @Test
+    void updateException() {
+        final String COMPETITION_NAME = "ABC";
+        final UUID ID = UUID.randomUUID();
+        Match oldMatch = Match.builder().build();
+        final String ROUND = "lAST 16";
+        Match newMatch = Match.builder().date(LocalDate.now()).stadium(Stadium.builder().build()).round(ROUND)
+                .score("1-0").homeTeam(Team.builder().id(ID).name("homeTeam").build())
+                .awayTeam(Team.builder().id(ID).name("awayTeam").build()).build();
+
+        assertThrows(IllegalArgumentException.class, () -> matchService.update(oldMatch, newMatch, COMPETITION_NAME));
     }
 
     @Test
@@ -114,5 +152,17 @@ class MatchServiceImplTest {
         assertNotNull(lastMatches);
         assertEquals(3, lastMatches.size());
         verify(matchCustomRepository, times(1)).findLast3Matches();
+    }
+
+    @Test
+    void createOrUpdateStanding() {
+        Competition competition = Competition.builder().build();
+        Team team = Team.builder().build();
+        when(standingService.findByCompetitionAndTeam(any(Competition.class), any(Team.class))).thenReturn(Optional.of(Standing.builder()
+                .wins(0).draws(0).losses(0).build()));
+
+        ReflectionTestUtils.invokeMethod(matchService, "createOrUpdateStanding", competition, team, 1, 0, 0);
+
+        verify(standingService, times(1)).update(any(Standing.class), any(Standing.class));
     }
 }
