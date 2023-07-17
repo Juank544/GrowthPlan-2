@@ -17,7 +17,6 @@ public abstract class TeamMapper {
     protected TeamService teamService;
 
     @Mapping(target = "stadium", source = "teamDTO.stadium", qualifiedByName = "settingStadium", conditionExpression = "java(java.util.Objects.nonNull(teamDTO.stadium()))")
-    @Mapping(target = "country", ignore = true)
     @Mapping(target = "president", ignore = true)
     @Mapping(target = "coach", ignore = true)
     public abstract Team toEntity(TeamDTO teamDTO);

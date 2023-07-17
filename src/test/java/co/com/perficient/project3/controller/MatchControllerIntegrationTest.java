@@ -1,9 +1,11 @@
 package co.com.perficient.project3.controller;
 
 import co.com.perficient.project3.model.dto.MatchDTO;
+import co.com.perficient.project3.model.entity.Competition;
 import co.com.perficient.project3.model.entity.Match;
 import co.com.perficient.project3.model.entity.Stadium;
 import co.com.perficient.project3.model.entity.Team;
+import co.com.perficient.project3.repository.CompetitionRepository;
 import co.com.perficient.project3.repository.MatchRepository;
 import co.com.perficient.project3.repository.StadiumRepository;
 import co.com.perficient.project3.repository.TeamRepository;
@@ -52,10 +54,13 @@ class MatchControllerIntegrationTest {
     private TeamRepository teamRepository;
     @Autowired
     private StadiumRepository stadiumRepository;
+    @Autowired
+    private CompetitionRepository competitionRepository;
 
     private final String STADIUM_NAME = "stadiumName";
     private final String HOME_TEAM_NAME = "homeTeam";
     private final String AWAY_TEAM_NAME = "awayTeam";
+    private final String COMPETITION_NAME = "competitionName";
 
     @BeforeEach
     void setUp() {
@@ -69,6 +74,10 @@ class MatchControllerIntegrationTest {
         Team homeTeam = Team.builder().name(HOME_TEAM_NAME).stadium(stadiumA).build();
         Team awayTeam = Team.builder().name(AWAY_TEAM_NAME).stadium(stadiumB).build();
         teamRepository.saveAllAndFlush(Arrays.asList(homeTeam, awayTeam));
+
+        Competition competitionA = Competition.builder().name(COMPETITION_NAME + "A").build();
+        Competition competitionB = Competition.builder().name(COMPETITION_NAME + "B").build();
+        competitionRepository.saveAll(Arrays.asList(competitionA, competitionB));
 
         Match matchA = Match.builder().id(uuidA).date(LocalDate.now().minusYears(1)).round("Last 8").score("2-0")
                 .homeTeam(homeTeam).awayTeam(awayTeam).build();
@@ -86,8 +95,8 @@ class MatchControllerIntegrationTest {
                 .toString(), null, ROUND, SCORE, HOME_TEAM_NAME, AWAY_TEAM_NAME);
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
-        MvcResult mvcResult = mockMvc.perform(post(MATCH).content(body).contentType(MediaType.APPLICATION_JSON))
-                .andDo(print()).andExpect(status().isCreated())
+        MvcResult mvcResult = mockMvc.perform(post(MATCH).queryParam("competitionName", COMPETITION_NAME + "A")
+                        .content(body).contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.date").isNotEmpty())
                 .andExpect(jsonPath("$.round").value(ROUND)).andExpect(jsonPath("$.score").value(SCORE)).andReturn();
     }
@@ -115,8 +124,8 @@ class MatchControllerIntegrationTest {
                 .toString(), STADIUM_NAME + "C", ROUND, SCORE, HOME_TEAM_NAME, AWAY_TEAM_NAME);
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
-        MvcResult mvcResult = mockMvc.perform(put(MATCH + "/{id}", uuidA).content(body)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
+        MvcResult mvcResult = mockMvc.perform(put(MATCH + "/{id}", uuidA).queryParam("competitionName", COMPETITION_NAME + "A")
+                        .content(body).contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.date").isNotEmpty())
                 .andExpect(jsonPath("$.round").value(ROUND)).andExpect(jsonPath("$.score").value(SCORE)).andReturn();
     }
@@ -126,8 +135,8 @@ class MatchControllerIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(LocalDate.now().minusMonths(1).toString(), "", "", "", "", "");
         String body = new ObjectMapper().writeValueAsString(matchDTO);
 
-        mockMvc.perform(put(MATCH + "/{id}", UUID.randomUUID()).content(body).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(put(MATCH + "/{id}", UUID.randomUUID()).queryParam("competitionName", COMPETITION_NAME + "B")
+                .content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test
